@@ -9,12 +9,8 @@
     <div class="container">
       <h2>Tanlanganlar</h2>
       <div v-if="likedProducts.length > 0" class="products">
-        <router-link
-          v-for="(product, index) in likedProducts"
-          :key="index"
-          :to="{ name: 'ProductDetail', params: { id: product.id } }"
-          class="product"
-        >
+        <router-link v-for="(product, index) in likedProducts" :key="index"
+          :to="{ name: 'ProductDetail', params: { id: product.id } }" class="product">
           <img :src="product.image" alt="Product Image" />
           <p class="prodName">{{ product.description }}</p>
           <div class="likesBtn">
@@ -25,7 +21,7 @@
           </div>
         </router-link>
       </div>
-      <p v-else>No liked products yet!</p>
+      <p v-else>Istaklar ro'yxati bo'sh!  <router-link to="/allproducts">Do'konga o'tish</router-link></p>
     </div>
   </div>
 </template>
@@ -62,29 +58,33 @@ export default {
 
 
 <style scoped>
-
 .container h2 {
-    font-size: 20px;
-    font-weight: 500;
-    padding: 20px 0;
-    margin-top: 30px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 20px 0;
+  margin-top: 30px;
 }
+
 .links a {
-    font-size: 13px;
-    color: black;
-    text-decoration: none;
-    transition: .3s;
+  font-size: 13px;
+  color: black;
+  text-decoration: none;
+  transition: .3s;
 }
-.links{
+
+.links {
   padding-top: 20px;
 }
-.products a{
+
+.products a {
   text-decoration: none;
   color: black;
 }
+
 .links a:hover {
-    color: #086c08;
+  color: #086c08;
 }
+
 .main {
   background-color: white;
 }

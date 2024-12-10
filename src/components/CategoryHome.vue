@@ -1,166 +1,119 @@
 <template>
-    <div class="category-main">
-        <div class="cat-top">
-            <Bars3BottomLeftIcon class="barsleft" />
-            <p style="font-weight: bold;">Bo'limlar</p>
-            <router-link to="/allproducts" class="barchasi">Barchasi</router-link>
+    <div class="flex min-h relative"  @mouseleave="hideSubCategories">
+      <!-- Sidebar -->
+      <aside class="bg-white text-black w-64 p-0">
+        <div class="p-3 bg-gray-200 flex justify-between">
+            <h2 class="text-normal text-sm font-semibold ">Bo'limlar</h2>
+            <router-link class="text-xs text-gray-600 hover:text-green-700">Barchasi></router-link>
         </div>
-        <!-- category -->
-        <div class="category-container">
-            <div v-for="category in categories" :key="category.id" class="category-item"
-                @mouseenter="showItems(category.id)" @mouseleave="hideItems">
-                <span>{{ category.name }}</span>
-                <div v-show="activeCategoryId === category.id" class="category-items">
-                    <ul>
-                        <li v-for="item in category.items" :key="item.id">{{ item.name }}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+       
+        <ul>
+          <li
+            v-for="(category, index) in categories"
+            :key="index"
+            @mouseenter="hoverCategory(category)"
+            class="flex items-center mb-2 text-xs cursor-pointer hover:text-green-900 p-2 rounded"
+          >
+            <span class="mr-2">{{ category.icon }}</span>
+            {{ category.name }}
+          </li>
+        </ul>
+      </aside>
+  
+      <!-- Subcategories Overlay -->
+      <div
+        v-if="activeCategory"
+        @mouseenter="keepSubCategoriesVisible"
+       
+        class="absolute top-0 left-64 bg-white  p-4  h-full z-10 category-sub"
+      >
+        <h2 class="text-lg font-bold mb-4">{{ activeCategory.name }}</h2>
+        <ul>
+          <li
+            v-for="(subCategory, index) in activeCategory.subCategories"
+            :key="index"
+            @click="navigateToCategory(activeCategory.name, subCategory)"
+            class="cursor-pointer text-xs border-b hover:text-green-600 mb-2"
+          >
+            {{ subCategory }}
+          </li>
+        </ul>
+      </div>
+  
+      <!-- Main Content Placeholder -->
+      
     </div>
-</template>
-
-
-<script>
-import { Bars3BottomLeftIcon } from '@heroicons/vue/24/outline';
-export default {
-    components: {
-        Bars3BottomLeftIcon,
-    },
+  </template>
+  
+  <script>
+  export default {
+    name: "SidebarWithCategories",
     data() {
-        return {
-            categories: [
-                { id: 1, name: 'Electronics', items: [{ id: 1, name: 'TV' }, { id: 2, name: 'Phone' }, { id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' },{ id: 3, name: 'Laptop' }] },
-                { id: 2, name: 'Furniture', items: [{ id: 4, name: 'Sofa' }, { id: 5, name: 'Table' }, { id: 6, name: 'Chair' }] },
-                { id: 3, name: 'Clothing', items: [{ id: 7, name: 'Shirt' }, { id: 8, name: 'Pants' }, { id: 9, name: 'Shoes' }] },
-            ],
-            activeCategoryId: null,
-        };
+      return {
+        categories: [
+          {
+            name: "Kabellar",
+            icon: "🔌",
+            subCategories: ["ABB", "ABBHng", "AB6Sh"],
+          },
+          {
+            name: "Simlar",
+            icon: "⚡",
+            subCategories: ["VVF", "VVFng", "BB6Sh"],
+          },
+          {
+            name: "Elektrotexnika",
+            icon: "💡",
+            subCategories: ["AC", "AS", "APB"],
+          },
+          {
+            name: "Sport va hordiq",
+            icon: "🏀",
+            subCategories: ["TTP", "KGBF", "MKSh"],
+          },
+        ],
+        activeCategory: null,
+        isSubCategoryHovered: false,
+      };
     },
     methods: {
-        showItems(id) {
-            this.activeCategoryId = id;
-        },
-        hideItems() {
-            this.activeCategoryId = null;
-        },
+      hoverCategory(category) {
+        this.activeCategory = category;
+        this.isSubCategoryHovered = true;
+      },
+      keepSubCategoriesVisible() {
+        this.isSubCategoryHovered = true;
+      },
+      hideSubCategories() {
+        this.isSubCategoryHovered = false;
+        setTimeout(() => {
+          if (!this.isSubCategoryHovered) {
+            this.activeCategory = null;
+          }
+        }, 200); // Delay hiding to allow smooth transition
+      },
+      navigateToCategory(categoryName, subCategoryName = null) {
+        this.$router.push({
+          name: "CategoryPage",
+          query: { category: categoryName, subCategory: subCategoryName },
+        });
+      },
     },
-};
-</script>
-
-<style scoped>
-.barsleft {
-    width: 24px;
-    color: black;
-}
-.barchasi{
-    color: black;
-    text-decoration: none;
-    transition: .3s;
-}
-.barchasi:hover{
-    color: green;
-    text-decoration: underline;
-}
-.category-main{
-    width: 250px;
-    background-color: white;
-    
-}
-.cat-top{
-    display: flex;
-    justify-content: space-between;
-    background-color: #dadad8;
-    font-size: 14px;
-    align-items: center;
-    padding: 10px;
-    border-radius: 7px 7px 0px 0px;
-    width: 100%;
-}
-.category-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    
-}
-
-.category-item {
-    position: relative;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 14px;
-}
-@media only screen and (max-width: 1350px) {
-    .category-container{
-        display: none;
-    }
-    .category-main{
-        position: relative;
-        left: 11%;
-    }
-}
-@media only screen and (max-width: 700px) {
-    .category-main{
-        position: static;
-        margin-left: 5px;
-        
-    }
-    .cat-top{
-        display: none;
-    }
-}
-
-.category-item:hover {
-    font-weight: bold;
-}
-
-.category-items {
-  z-index: 5;
- 
-  position: absolute;
-  top: 0;
-  left: 250px;
-  width: 300px;
-  background-color: white;
-  display: flex;
-  /* flex-wrap: wrap; */
-  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  height: 400px; /* Fixed height for the category items */
-  overflow-y: auto; /* Allow scrolling if the content overflows */
-}
-
-.category-items > div {
-  width: 200px; /* Adjust the width of each category item */
-  margin: 5px;  /* Space between items */
-}
-
-.category-item:hover .category-items {
-    display: block;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-li {
-    padding: 1px 0;
-    margin: 5px 0;
-}
-
-.category-item:hover .category-items ul li {
-    cursor: pointer;
-    padding: 1px 0;
-    width: 250px;
-    border-bottom: 2px solid rgb(234, 231, 231);
-}
-
-.category-item:hover .category-items ul li:hover {
-    
-    color: #086c08;
-}
-</style>
+  };
+  </script>
+  
+  <style scoped>
+  /* Subcategories overlay styling */
+  .absolute {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+  .category-sub{
+    width: 500px;
+  }
+  .hover:bg-gray-700 {
+    transition: background-color 0.2s ease-in-out;
+  }
+  </style>
+  
+  
+  

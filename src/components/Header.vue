@@ -178,6 +178,9 @@
     display: flex;
     order: 1;
 }
+.logo a{
+    display: flex;
+}
 
 .logo2 {
     background-color: #084404;
@@ -434,7 +437,9 @@
     .logo2 {
         width: 30.2px;
     }
-
+ .logo a{
+    display: flex;
+ }
     .navbar-main {
         display: flex;
         flex-direction: row;
@@ -550,6 +555,7 @@
         width: 100%;
     }
 }
+
 </style>
 <script>
 import axios from "axios";

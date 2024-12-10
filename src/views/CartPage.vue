@@ -41,7 +41,7 @@
                 </table>
 
                 <!-- Empty Cart Message -->
-                <p v-else>Savatingiz bo'sh! <router-link to="/">Do'konga o'tish</router-link></p>
+                <p v-else>Savatingiz bo'sh! <router-link to="/allproducts">Do'konga o'tish</router-link></p>
 
                 <!-- Order Form -->
                 <div class="forBuy">

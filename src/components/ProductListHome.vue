@@ -86,9 +86,16 @@
   }
   @media only screen and (max-width: 450px) {
   .card-link{
-      width: 90%;
+      width: 100%;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .card{
+      width: 300px;
+    }
+
     .card-container {
    text-align: center;
    gap: 20px;
