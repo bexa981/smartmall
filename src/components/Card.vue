@@ -43,12 +43,13 @@
   
 
   .card {
-  width: 156px;
+  width: 170px;
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.2s ease;
   cursor: pointer;
+  margin-top: 30px;
 }
 
 .card:hover .card-image {

@@ -3,7 +3,8 @@
       <div class="carousel">
         <!-- Container for all images, shifting by currentIndex -->
         <div class="carousel-images" :style="{ transform: 'translateX(' + (-currentIndex * 100) + '%)' }">
-          <img v-for="(wallpaper, index) in wallpapers" :key="index" :src="require(`@/assets/carousel/${wallpaper}`)" alt="Wallpaper" class="carousel-image" />
+          <img v-for="(wallpaper, index) in wallpapers" :key="index" :src="require(`@/assets/carousel/${wallpaper}`)" :title="titleImage[index]" alt="Wallpaper" class="carousel-image" />
+         
         </div>
   
         <!-- Carousel Controls (Prev/Next) -->
@@ -36,9 +37,14 @@
     data() {
       return {
         currentIndex: 0,
+        titleImage:[
+          "Hik vision camera",
+          "Bitavoy texnikalar",
+          "Provoda sim"
+        ],
         wallpapers: [
-          "carousel1.jpg",
-          "carousel2.jpg",
+          "carousel1.webp",
+          "carousel2.webp",
           "carousel3.jpg"
         ],
         interval: null,
@@ -82,15 +88,16 @@
     justify-content: center;
     align-items: center;
     margin: 20px;
-    height: 300px;
+    height: 350px;
   }
   
   .carousel {
     border-radius: 10px;
     position: relative;
     width: 100%;
-    max-width: 800px;
-    height: 290px; /* Set a fixed height for the carousel */
+    max-width: 900px;
+    background-color: white;
+    height: auto; /* Set a fixed height for the carousel */
     overflow: hidden;
   }
   @media only screen and (max-width: 1350px) {

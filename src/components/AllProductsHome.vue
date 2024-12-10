@@ -2,9 +2,9 @@
     <div class="main">
       <div style="margin-top: 30px;" class="bg-white-50 p-8 container">
         <h2 style="font-weight: 500;" class="text-1xl font-500 mb-6">Mahsulotlar</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           <!-- Product Card -->
-          <div v-for="(product, index) in allProducts.slice(0, 12)" 
+          <div v-for="(product, index) in allProducts.slice(0, 15)" 
             :key="index"
             class="bg-white rounded-lg shadow hover:shadow-lg p-4 transition-transform transform hover:scale-105"
           >
@@ -50,6 +50,7 @@
     padding: 0 8px;
     margin: 0 auto;
     background-color: transparent;
+    color: rgb(247, 237, 230);
   }
   
   @media (min-width: 1246px) {
@@ -58,9 +59,9 @@
     }
   }
   
-  @media (min-width: 1348px) {
+  @media (min-width: 1248px) {
     .container {
-      max-width: 1348px;
+      max-width: 1248px;
     }
   }
   

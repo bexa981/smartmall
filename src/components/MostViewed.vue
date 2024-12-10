@@ -4,7 +4,7 @@
 
     <div class="bg-white-50 p-8 container ">
       <h2 style="font-weight: 500;" class="text-1xl font-500 mb-6">Ko'p ko'rilganlar</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <div
           v-for="(product, index) in mostViewedProducts"
           :key="index"
@@ -60,9 +60,9 @@
   }
 }
 
-@media (min-width: 1348px) {
+@media (min-width: 1248px) {
   .container {
-    max-width: 1348px;
+    max-width: 1248px;
   }
 }
   /* Custom styles for most viewed component */

@@ -8,9 +8,9 @@
           <CategoryMediaVue/>
           <ProductListHomeVue />
         </div>
-        <router-link to="/category/:categoryId" class="bg-wall-link bg-wall">
+        <!-- <router-link to="/category/:categoryId" class="bg-wall-link bg-wall">
           
-        </router-link>
+        </router-link> -->
       </div>
       
     </div>
@@ -67,11 +67,7 @@ export default {
           price: "37 329",
           image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
         },
-        {
-          name: "АПУПН 3x2,5 электр сими",
-          price: "2 638",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
+       
       ],
       mostSoldProducts: [
         {
@@ -99,11 +95,7 @@ export default {
           price: "29,000",
           image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
         },
-        {
-          name: "Product F",
-          price: "35,000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
+       
       ],
       allProducts: [
         {
@@ -166,6 +158,22 @@ export default {
           price: "11,775",
           image: "https://via.placeholder.com/150",
         },
+        {
+          name: "PUNP 2x1,5 elektr simi",
+          price: "4,776",
+          image: "https://via.placeholder.com/150",
+        },
+        {
+          name: "PUNP 2x1,5 elektr simi",
+          price: "4,776",
+          image: "https://via.placeholder.com/150",
+        },
+        {
+          name: "PUNP 2x1,5 elektr simi",
+          price: "4,776",
+          image: "https://via.placeholder.com/150",
+        },
+        
        
         // Add more product objects here
       ],
@@ -175,6 +183,7 @@ export default {
 </script>
 
 <style scoped>
+
 .rightTop{
   display: flex;
 }
