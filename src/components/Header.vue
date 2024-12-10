@@ -1,7 +1,7 @@
 <template>
     <div class="main-nav">
         <!-- Top Header -->
-        <div class="header-top header">
+        <div class="header-top header" ref="headerTop">
             <div class="left-header">
                 <a style="align-items: center; display: flex; gap: 10px;" href="tel:+998900757151">
                     <PhoneIcon class="phoneicon" /> +99890 075 71 51
@@ -55,7 +55,7 @@
 
         <!-- Navbar -->
 
-        <div class="nav">
+        <div class="nav " ref="nav">
             <div class="navbar-main">
                 <div class="logo">
                     <router-link to="/">
@@ -139,7 +139,8 @@
 
 
         </div>
-
+        <!-- Placeholder -->
+        <div ref="navPlaceholder"></div>
 
     </div>
 </template>
@@ -150,10 +151,31 @@
     --mainColor: #fcfbf7;
 }
 
+.header-top {
+  position: relative;
+  width: 100%;
+  background-color: #fcfbf7;
+  z-index: 10;
+}
 .nav {
-    background-color: white;
-    display: flex;
-    flex-direction: column;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.sticky-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 30;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.nav-placeholder {
+  height: 0;
+}
+.nav-placeholder.sticky {
+  height: 70px; /* Adjust to match nav height */
 }
 
 .karzina-main {
@@ -178,7 +200,8 @@
     display: flex;
     order: 1;
 }
-.logo a{
+
+.logo a {
     display: flex;
 }
 
@@ -437,9 +460,11 @@
     .logo2 {
         width: 30.2px;
     }
- .logo a{
-    display: flex;
- }
+
+    .logo a {
+        display: flex;
+    }
+
     .navbar-main {
         display: flex;
         flex-direction: row;
@@ -555,7 +580,6 @@
         width: 100%;
     }
 }
-
 </style>
 <script>
 import axios from "axios";
@@ -583,6 +607,7 @@ export default {
     data() {
         return {
             currentLanguage: "uz", // Default language
+            isSticky: false,
             searchQuery: "", // User's search query
             selectedCategory: "all", // Default category
             likedProducts: JSON.parse(localStorage.getItem("likedProducts")) || [],
@@ -607,6 +632,11 @@ export default {
     },
     mounted() {
         this.fetchExchangeRates();
+        this.$nextTick(() => {
+            if (this.$refs.headerTop && this.$refs.nav) {
+                window.addEventListener("scroll", this.handleScroll);
+            }
+        });
 
         // Listen for updates to cart and likes in localStorage
         window.addEventListener("cart-updated", this.updateCartProducts);
@@ -614,10 +644,32 @@ export default {
     },
     beforeDestroy() {
         // Remove event listeners on component destroy
+        window.removeEventListener("scroll", this.handleScroll);
         window.removeEventListener("cart-updated", this.updateCartProducts);
         window.removeEventListener("likes-updated", this.updateLikedProducts);
     },
     methods: {
+        handleScroll() {
+            const headerTop = this.$refs.headerTop;
+            const nav = this.$refs.nav;
+            const navPlaceholder = this.$refs.navPlaceholder;
+
+            if (!headerTop || !nav || !navPlaceholder) return;
+
+            const scrollPosition = window.scrollY;
+            const headerTopHeight = headerTop.offsetHeight;
+
+            if (scrollPosition > headerTopHeight) {
+                this.isSticky = true;
+                nav.classList.add("sticky-nav");
+                navPlaceholder.style.height = `${nav.offsetHeight}px`;
+            } else {
+                this.isSticky = false;
+                nav.classList.remove("sticky-nav");
+                navPlaceholder.style.height = "0";
+            }
+        },
+
         updateCartProducts() {
             this.cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
         },

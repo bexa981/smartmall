@@ -1,5 +1,5 @@
 <template>
-    <div class="flex min-h relative"  @mouseleave="hideSubCategories">
+    <div class="flex  relative"  @mouseleave="hideSubCategories">
       <!-- Sidebar -->
       <aside class="bg-white text-black w-64 p-0">
         <div class="p-3 bg-gray-200 flex justify-between">

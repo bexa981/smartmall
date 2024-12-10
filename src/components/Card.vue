@@ -1,19 +1,28 @@
 <template>
-  <div class="card" @click="onClick" tabindex="0" :aria-label="description">
+  <div
+    class="card h-auto  bg-white rounded-lg shadow-md hover:shadow-lg transform hover:translate-y-[-5px] transition duration-200 cursor-pointer mx-auto"
+    @click="onClick"
+    tabindex="0"
+    :aria-label="description"
+  >
     <img 
       :src="imageSrc || defaultImage" 
       alt="Card Image" 
-      class="card-image" 
+      class="card-image w-full h-32 object-cover  transition-transform duration-300 "
     />
-    <div class="card-body">
-      <h3 class="card-title">{{ price }} UZS</h3>
-      <p class="card-text">{{ description }}</p>
+    <div class="card-body p-4 text-center">
+      <h3 class="card-title text-xs font-semibold text-white bg-green-700 rounded-full py-1 px-2 inline-block">
+        {{ price }} UZS
+      </h3>
+      <p class="card-text mt-2 text-xs font-semibold text-gray-800 leading-relaxed">
+        {{ description }}
+      </p>
     </div>
   </div>
 </template>
-  
-  <script>
-  export default {
+
+<script>
+export default {
   name: "Card",
   props: {
     imageSrc: String,
@@ -31,93 +40,16 @@
       if (this.clickHandler) {
         this.clickHandler();
       } else {
-        console.log('clicked')
+        console.log("Card clicked");
       }
     },
   },
 };
+</script>
 
-  </script>
-  
-  <style scoped>
-  
-
-  .card {
-  width: 170px;
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.2s ease;
-  cursor: pointer;
-  margin-top: 30px;
-}
-
-.card:hover .card-image {
-  transform: scale(1.1);
-  opacity: 0.7;
-}
-
+<style scoped>
 .card:focus {
   outline: 2px solid #086c08;
   outline-offset: 2px;
 }
-
-.card-image {
-  transition: 0.3s;
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-}
-
-.card-body {
-  padding: 5px;
-}
-
-.card-title {
-  font-size: 13px;
-  font-weight: bold;
-  color: white;
-  background-color: green;
-  border-radius: 30px;
-  margin: 0px 20px;
-  text-align: center;
-}
-
-.card-text {
-  font-size: 13px;
-  color: black;
-  margin-top: 8px;
-  font-weight: 600;
-}
-
-@media only screen and (max-width: 1350px) {
-  .card {
-    width: 140px;
-  }
-}
-
-@media only screen and (max-width: 700px) {
-  .card {
-    width: 200px;
-  }
-}
-
-@media only screen and (max-width: 450px) {
-  .card {
-    width: 100%;
-  }
-  .card-title {
-    width: fit-content;
-    padding: 5px 20px;
-  }
-  .card-body {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
- 
-  </style>
-  
+</style>

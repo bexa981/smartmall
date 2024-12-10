@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <div class="catTop">
-      <CategoryHomeVue />
+    <div class="catTop container">
+      <CategoryHomeVue class="category-home"/>
       <div class="rightTop">
         <div class="itemsCarousel">
           <CarouselHomeVue />
@@ -201,12 +201,13 @@ export default {
   background-position: center;
   margin-top: 20px;
 }
-@media only screen and (max-width: 1350px) {
-.catTop{
-  flex-direction: column;
-
-
+@media only screen and (max-width: 850px) {
+  .category-home{
+    display: none!important;
+  }
 }
+@media only screen and (max-width: 1350px) {
+
 .rightTop{
   justify-content: center;
 }
@@ -220,5 +221,24 @@ export default {
   display: none;
 }
 }
+.container {
+    width: 100%;
+    
+    margin-top: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: transparent;
+}
 
+@media (min-width: 1346px) {
+    .container {
+        max-width: 1366px;
+    }
+}
+
+@media (min-width: 1250px) {
+    .container {
+        max-width: 1250px;
+    }
+}
 </style>
