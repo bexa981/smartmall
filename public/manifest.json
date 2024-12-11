@@ -1,0 +1,21 @@
+{
+    "name": "smartmall",
+    "short_name": "App",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "icons": [
+      {
+        "src": "/smartmallLogoo.jpg",
+        "sizes": "32x32",
+        "type": "image/jpg"
+      },
+      {
+        "src": "/smartmallLogoo.jpg",
+        "sizes": "32x32",
+        "type": "image/jpg"
+      }
+    ]
+  }
+  

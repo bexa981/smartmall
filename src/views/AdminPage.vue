@@ -3,8 +3,11 @@
       <!-- Sidebar -->
       <aside class="sidebar bg-gray-800 text-white w-64 p-6">
         <div class="admin-info text-center mb-8">
-          <div class="logo bg-gray-500 w-16 h-16 rounded-full mx-auto"></div>
-          <h3 class="text-xl font-semibold mt-4">Admin Name</h3>
+          <div class="logo bg-gray-500 w-16 h-16 rounded-full mx-auto">
+            <img src="/smartmallLogoo.jpg" alt="Logo" class="w-16 h-16 object-cover rounded-full mx-auto" />
+
+          </div>
+          <h3 class="text-xl font-semibold mt-4">Super-Admin</h3>
         </div>
         <nav>
           <ul>
