@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 p-5">
+    <div class="card-main grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 p-5">
       <router-link
         v-for="(card, index) in cards"
         :key="index"
@@ -66,4 +66,12 @@ export default {
   },
 };
 </script>
+<style>
 
+
+@media screen and (max-width: 500px) {
+  .card-main{
+  padding: 1px;
+}
+}
+</style>
