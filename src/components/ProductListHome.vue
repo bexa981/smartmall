@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 p-6">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 p-5">
       <router-link
         v-for="(card, index) in cards"
         :key="index"
@@ -9,7 +9,7 @@
           params: { id: index }, 
           query: { product: JSON.stringify(card) } 
         }"
-        class="transform w-auto h-64 transition-transform duration-200  "
+        class="transform w-auto h-auto transition-transform duration-200  "
       >
         <Card
           :imageSrc="card.image"

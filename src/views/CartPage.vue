@@ -30,7 +30,7 @@
                                 <span>{{ product.quantity }}</span>
                                 <button @click="incrementQuantity(index)">+</button>
                             </td>
-                            <td class="allPrice">{{ product.price * product.quantity }} UZS</td>
+                            <td class="allPrice">Jami: {{ product.price * product.quantity }} UZS</td>
                             <td class="actions">
                                 <button class="removeBtn" @click="removeFromCart(index)">
                                     <TrashIcon class="trash" />
@@ -319,7 +319,19 @@ tbody tr {
 
     object-fit: cover;
 }
-
+@media screen and (max-width: 650px) {
+  .thTop{
+    display: none;
+  }
+  tbody tr{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
 .container {
     width: 100%;
     padding-right: 8px;

@@ -1,19 +1,86 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="uz">
   <head>
+    <!-- Character encoding -->
     <meta charset="utf-8">
+    
+    <!-- Browser compatibility -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    
+    <!-- Viewport for responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary meta tags for SEO -->
+    <title>Smartmall.uz - elektrotovarlar va elektronika internet do‘koni</title>
+    <meta name="description" content="Hamyonbop tovarlar koʼlami keng, ularni uyga yetkazib berish xizmati va shaxarlarda buyurtmalarni berish markazlaridan olib ketish imkoniyati mavjud">
+    <meta name="keywords" content="tovarlar katalogi, qaerdan xarid qilish mumkin, narxlar, fikrlar, tavsif, maishiy texnika, elektrotexnika internet doʼkoni, elektronika, smartmall.uz doʼkonlari manzili, Surxondaryo, Denov,Termiz,Uzun,Sarasiyo,Oltinsoy, Toshkent, Samarqand, Buxoro, Аndijon, Namangan, Xorazm">
+    <meta name="author" content="Smartmall.uz">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Smartmall.uz - elektrotovarlar va elektronika internet do‘koni">
+    <meta property="og:description" content="Hamyonbop tovarlar koʼlami keng, ularni uyga yetkazib berish xizmati va shaxarlarda buyurtmalarni berish markazlaridan olib ketish imkoniyati mavjud">
+    <meta property="og:image" content="https://smartmall.uz/img/smartmal2.381fe240.png"> <!-- Replace with your OG image URL -->
+    <meta property="og:url" content="https://smartmall.uz">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="uz_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="https://smartmall.uz/img/smartmal2.381fe240.png">
+    <meta name="twitter:title" content="Smartmall.uz - elektrotovarlar va elektronika internet do‘koni">
+    <meta name="twitter:description" content="Hamyonbop tovarlar koʼlami keng, ularni uyga yetkazib berish xizmati va shaxarlarda buyurtmalarni berish markazlaridan olib ketish imkoniyati mavjud.">
+    <meta name="twitter:image" content="https://smartmall.uz/img/smartmal2.381fe240.png"> <!-- Replace with your Twitter image URL -->
+    <meta name="twitter:site" content="@smartmalluz"> <!-- Replace with your Twitter handle -->
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" sizes="32x32" href="/smartmallLogoo.jpg">
+    <link rel="icon" type="image/jpg" sizes="16x16" href="/smartmallLogoo.jpg">
+    <link rel="apple-touch-icon" href="/smartmallLogoo.jpg">
+    <link rel="shortcut icon" href="/ssmartmallLogoo.jpg">
+
+    <!-- Preload important assets -->
+    <link rel="preload" href="https://rsms.me/inter/inter.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style">
+    
+    <!-- Fonts -->
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    
+    <!-- Add a manifest for PWA -->
+    <link rel="manifest" href="<%= BASE_URL %>manifest.json">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Structured Data for Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://smartmall.uz/",
+      "name": "smartmall",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://smartmall.uz/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Meta tag for mobile app -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Accessibility meta tags -->
+    <meta name="format-detection" content="telephone=no">
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>
+        We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.
+      </strong>
     </noscript>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <!-- Built files will be auto injected -->
   </body>
 </html>
