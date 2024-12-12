@@ -551,7 +551,7 @@
     }
 
     .currency-display2 {
-        display: block;
+        display: none;
         order: 2;
         display: flex;
     }
@@ -579,6 +579,11 @@
     .search-input {
         width: 100%;
     }
+}
+@media only screen and (max-width: 500px) {
+.currency-display2{
+    display: none;
+}
 }
 </style>
 <script>
