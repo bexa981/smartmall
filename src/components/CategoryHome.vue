@@ -22,7 +22,7 @@
       <h2 class="text-lg font-bold mb-4">{{ activeCategory.name }}</h2>
       <ul class="grid grid-cols-4 gap-x-4 gap-y-2 justify-around">
         <li v-for="(subCategory, index) in activeCategory.subCategories" :key="index"
-          @click="navigateToCategory(activeCategory.name, subCategory)"
+          
           class="cursor-pointer w-full text-xs border-b hover:text-green-600 mb-2" :class="{
             'row-start-2': (index + 1) % 6 === 0, // Move every 6th item to the bottom
           }">
