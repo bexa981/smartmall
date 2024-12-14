@@ -3,7 +3,7 @@
       <div class="carousel">
         <!-- Container for all images, shifting by currentIndex -->
         <div class="carousel-images" :style="{ transform: 'translateX(' + (-currentIndex * 100) + '%)' }">
-          <img v-for="(wallpaper, index) in wallpapers" :key="index" :src="require(`@/assets/carousel/${wallpaper}`)" :title="titleImage[index]" alt="Wallpaper" class="carousel-image" />
+          <img v-for="image in images" :key="image.id" :src="image.src" :title="image.title" alt="Wallpaper" class="carousel-image" />
          
         </div>
   
@@ -28,6 +28,7 @@
   <script>
   import { ChevronLeftIcon } from '@heroicons/vue/24/solid';
   import { ChevronRightIcon } from '@heroicons/vue/24/solid';
+  import { getImages } from '../service/images.service'
   
   export default {
     components: {
@@ -37,26 +38,17 @@
     data() {
       return {
         currentIndex: 0,
-        titleImage:[
-          "Hik vision camera",
-          "Bitavoy texnikalar",
-          "Provoda sim"
-        ],
-        wallpapers: [
-          "carousel1.webp",
-          "carousel2.webp",
-          "carousel3.jpg"
-        ],
+        images: [],
         interval: null,
       };
     },
     methods: {
       nextImage() {
-        this.currentIndex = (this.currentIndex + 1) % this.wallpapers.length;
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
       },
       prevImage() {
         this.currentIndex =
-          (this.currentIndex - 1 + this.wallpapers.length) % this.wallpapers.length;
+          (this.currentIndex - 1 + this.images.length) % this.images.length;
       },
       goToImage(index) {
         this.currentIndex = index;
@@ -67,8 +59,12 @@
       stopAutoSwitch() {
         clearInterval(this.interval);
       },
+      async fetchImages() {
+        this.images = await getImages()
+      }
     },
     mounted() {
+      this.fetchImages();
       this.startAutoSwitch();
     },
     beforeDestroy() {

@@ -13,6 +13,30 @@
             <li>
                 <router-link to="/category/4"><img class="images-cat" src="../assets/category-icon-8.svg" alt="category"></router-link>
             </li>
+            <li>
+                <router-link to="/allproducts"><Bars4Icon class="images-cat"/></router-link>
+            </li>
+            <li>
+                <router-link to="/category/2"><img class="images-cat" src="../assets/kabeli.svg" alt="kabel"></router-link>
+            </li>
+            <li>
+                <router-link to="/category/3"><img class="images-cat" src="../assets/provoda.svg" alt="provada"></router-link>
+            </li>
+            <li>
+                <router-link to="/category/4"><img class="images-cat" src="../assets/category-icon-8.svg" alt="category"></router-link>
+            </li>
+            <li>
+                <router-link to="/allproducts"><Bars4Icon class="images-cat"/></router-link>
+            </li>
+            <li>
+                <router-link to="/category/2"><img class="images-cat" src="../assets/kabeli.svg" alt="kabel"></router-link>
+            </li>
+            <li>
+                <router-link to="/category/3"><img class="images-cat" src="../assets/provoda.svg" alt="provada"></router-link>
+            </li>
+            <li>
+                <router-link to="/category/4"><img class="images-cat" src="../assets/category-icon-8.svg" alt="category"></router-link>
+            </li>
         </ul>
     </div>
 </template>
