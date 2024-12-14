@@ -1,9 +1,10 @@
 import { db as database } from '../firebaseConfig'
-import { collection, getDocs } from "firebase/firestore"; 
+import { collection } from "firebase/firestore"; 
+import { getFirebaseDocs } from '../utils';
 
 const imagesCollection = collection(database, 'dashboard-carousel')
 
 export async function getImages() {
-  const snapshot = await getDocs(imagesCollection);
-  return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+  const data = await getFirebaseDocs(imagesCollection)
+  return data
 }

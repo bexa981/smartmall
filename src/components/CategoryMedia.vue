@@ -2,50 +2,36 @@
     <div class="category-media">
         <ul>
             <li>
-                <router-link to="/allproducts"><Bars4Icon class="images-cat"/></router-link>
+                <router-link to="/allproducts">
+                    <i class="fa-solid fa-bars" ></i>
+                </router-link>
             </li>
-            <li>
-                <router-link to="/category/2"><img class="images-cat" src="../assets/kabeli.svg" alt="kabel"></router-link>
-            </li>
-            <li>
-                <router-link to="/category/3"><img class="images-cat" src="../assets/provoda.svg" alt="provada"></router-link>
-            </li>
-            <li>
-                <router-link to="/category/4"><img class="images-cat" src="../assets/category-icon-8.svg" alt="category"></router-link>
-            </li>
-            <li>
-                <router-link to="/allproducts"><Bars4Icon class="images-cat"/></router-link>
-            </li>
-            <li>
-                <router-link to="/category/2"><img class="images-cat" src="../assets/kabeli.svg" alt="kabel"></router-link>
-            </li>
-            <li>
-                <router-link to="/category/3"><img class="images-cat" src="../assets/provoda.svg" alt="provada"></router-link>
-            </li>
-            <li>
-                <router-link to="/category/4"><img class="images-cat" src="../assets/category-icon-8.svg" alt="category"></router-link>
-            </li>
-            <li>
-                <router-link to="/allproducts"><Bars4Icon class="images-cat"/></router-link>
-            </li>
-            <li>
-                <router-link to="/category/2"><img class="images-cat" src="../assets/kabeli.svg" alt="kabel"></router-link>
-            </li>
-            <li>
-                <router-link to="/category/3"><img class="images-cat" src="../assets/provoda.svg" alt="provada"></router-link>
-            </li>
-            <li>
-                <router-link to="/category/4"><img class="images-cat" src="../assets/category-icon-8.svg" alt="category"></router-link>
+
+            <li v-for="category in categories" :key="category.id">
+                <router-link :to="`/category/${category.id}`">
+                    <i :class="`${category.icon} images-cat`"></i>
+                </router-link>
             </li>
         </ul>
     </div>
 </template>
 <script>
-import { Bars4Icon } from '@heroicons/vue/24/outline';
+import { getCategories } from '../service/categories.service'
+
 export default {
     name: 'CategoryMedia',
-    components:{
-        Bars4Icon,
+    data() {
+        return {
+            categories: []
+        }
+    },
+    methods: {
+        async fetchCategories() {
+            this.categories = await getCategories()
+        }
+    },
+    mounted() {
+        this.fetchCategories()
     }
 };
 </script>

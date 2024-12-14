@@ -10,7 +10,7 @@
       <ul>
         <li v-for="(category, index) in categories" :key="index" @mouseenter="hoverCategory(category)"
           class="flex items-center mb-2 text-xs cursor-pointer hover:text-green-900 p-2 rounded">
-          <span class="mr-2">{{ category.icon }}</span>
+          <i :class="category.icon"></i>
           {{ category.name }}
         </li>
       </ul>
@@ -21,12 +21,12 @@
       class="absolute top-0 left-64 bg-white  p-4   h-full z-10 category-sub ">
       <h2 class="text-lg font-bold mb-4">{{ activeCategory.name }}</h2>
       <ul class="grid grid-cols-4 gap-x-4 gap-y-2 justify-around">
-        <li v-for="(subCategory, index) in activeCategory.subCategories" :key="index"
+        <li v-for="(subCategory, index) in activeCategory.subCategories" :key="subCategory.id"
           
           class="cursor-pointer w-full text-xs border-b hover:text-green-600 mb-2" :class="{
             'row-start-2': (index + 1) % 6 === 0, // Move every 6th item to the bottom
           }">
-          {{ subCategory }}
+          {{ subCategory.name }}
         </li>
       </ul>
     </div>
@@ -37,32 +37,12 @@
 </template>
   
 <script>
+import { getCategories } from '../service/categories.service'
 export default {
   name: "SidebarWithCategories",
   data() {
     return {
-      categories: [
-        {
-          name: "Kabellar",
-          icon: "🔌",
-          subCategories: ["ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh", "ABB", "ABBHng", "AB6Sh"],
-        },
-        {
-          name: "Simlar",
-          icon: "⚡",
-          subCategories: ["VVF", "VVFng", "BB6Sh"],
-        },
-        {
-          name: "Elektrotexnika",
-          icon: "💡",
-          subCategories: ["AC", "AS", "APB"],
-        },
-        {
-          name: "Sport va hordiq",
-          icon: "🏀",
-          subCategories: ["TTP", "KGBF", "MKSh"],
-        },
-      ],
+      categories: [],
       activeCategory: null,
       isSubCategoryHovered: false,
     };
@@ -89,7 +69,13 @@ export default {
         query: { category: categoryName, subCategory: subCategoryName },
       });
     },
+    async fetchCategories() {
+      this.categories = await getCategories();
+    }
   },
+  mounted() {
+    this.fetchCategories()
+  }
 };
 </script>
   

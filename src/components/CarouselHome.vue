@@ -19,7 +19,7 @@
   
         <!-- Indicators -->
         <div class="carousel-indicators">
-          <span v-for="(wallpaper, index) in wallpapers" :key="index" :class="['indicator', { active: currentIndex === index }]" @click="goToImage(index)"></span>
+          <span v-for="(wallpaper, index) in images" :key="index" :class="['indicator', { active: currentIndex === index }]" @click="goToImage(index)"></span>
         </div>
       </div>
     </div>
