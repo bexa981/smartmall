@@ -21,6 +21,15 @@
             </li>
           </ul>
         </nav>
+        <div class="mt-auto pt-8">
+        <!-- Logout Button -->
+        <button
+          class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600"
+          @click="logout"
+        >
+          Logout
+        </button>
+      </div>
       </aside>
   
       <!-- Main Content -->
@@ -103,6 +112,13 @@
       updateHomePageContent(updatedContent) {
         this.homePageContent = updatedContent;
       },
+      logout() {
+      // Clear any necessary state or tokens
+      localStorage.clear();
+
+      // Navigate to the login page
+      this.$router.push("/login");
+    },
     },
   };
   </script>

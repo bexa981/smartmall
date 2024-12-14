@@ -12,7 +12,7 @@
         <router-link v-for="(product, index) in likedProducts" :key="index"
           :to="{ name: 'ProductDetail', params: { id: product.id } }" class="product">
           <img :src="product.image" alt="Product Image" />
-          <p class="prodName">{{ product.description }}</p>
+          <p class="prodName">{{ product.name }}</p>
           <div class="likesBtn">
             <p class="prodPrice"> {{ product.price }} UZS</p>
             <button @click.stop.prevent="removeFromLikes(index)">

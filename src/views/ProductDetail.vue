@@ -77,31 +77,40 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2';
-import TabsVue from '@/components/Tabs.vue';
+import Swal from "sweetalert2";
+import TabsVue from "@/components/Tabs.vue";
+
 export default {
   name: "ProductDetail",
   components: {
     TabsVue,
   },
-  props: ["id"], // Receive the ID as a prop
+  props: ["id"], // Receive `id` as a prop
   data() {
-    const product = this.$route.query.product
-      ? JSON.parse(this.$route.query.product)
-      : null;
-
     return {
-      product,
+      product: null,
       quantity: 1,
       liked: false, // Initial state of the like button
     };
   },
   created() {
+    const productData = this.$route.query.product
+      ? JSON.parse(this.$route.query.product)
+      : null;
+
+    if (productData) {
+      this.product = productData;
+    } else if (this.id) {
+      this.fetchProduct(this.id); // Fetch product details if `id` is available
+    } else {
+      this.handleMissingData(); // Handle missing data
+    }
+
     this.checkIfLiked(); // Check the like state when the component is created
   },
   computed: {
     imageSrc() {
-      return this.product?.image || "";
+      return this.product?.image || "https://via.placeholder.com/150";
     },
     title() {
       return this.product?.name || "Unknown Product";
@@ -117,6 +126,31 @@ export default {
     },
   },
   methods: {
+    async fetchProduct(id) {
+      try {
+        // Replace with an actual API call or data fetching logic
+        const response = await fetch(`/api/products/${id}`);
+        if (response.ok) {
+          this.product = await response.json();
+        } else {
+          this.handleMissingData();
+        }
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        this.handleMissingData();
+      }
+    },
+    handleMissingData() {
+      // Redirect to a fallback page or show an error message
+      Swal.fire({
+        icon: "error",
+        title: "Mahsulot topilmadi",
+        text: "Iltimos, qayta urinib ko'ring yoki boshqa mahsulotni tanlang.",
+        confirmButtonText: "OK",
+      }).then(() => {
+        this.$router.push({ name: "Home" }); // Replace "Home" with your fallback route name
+      });
+    },
     incrementQuantity() {
       this.quantity += 1;
     },
@@ -134,85 +168,88 @@ export default {
       this.liked = !this.liked; // Toggle the like state
     },
     checkIfLiked() {
-      const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
-      this.liked = likedProducts.some((p) => p.id === this.id);
+      try {
+        const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
+        this.liked = likedProducts.some((p) => p.id === this.id);
+      } catch (error) {
+        console.error("Failed to check liked products:", error);
+      }
     },
     addToLikes() {
-      const product = {
-        id: this.id, // Ensure each product has a unique ID
-        image: this.imageSrc,
-        description: this.description,
-        name: this.title,
-        price: this.price,
-      };
-      // Retrieve liked products from localStorage
-      const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
+      try {
+        const product = {
+          id: this.id, // Ensure each product has a unique ID
+          image: this.imageSrc,
+          description: this.description,
+          name: this.title,
+          price: this.price,
+        };
+        const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
+        likedProducts.push(product);
+        localStorage.setItem("likedProducts", JSON.stringify(likedProducts));
 
-      // Check if the product is already liked
-      likedProducts.push(product);
-      localStorage.setItem("likedProducts", JSON.stringify(likedProducts));
-
-      Swal.fire({
-        icon: "success",
-        title: "Mahsulot tanlanganlarga qo'shildi!",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+        Swal.fire({
+          icon: "success",
+          title: "Mahsulot tanlanganlarga qo'shildi!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Failed to add to likes:", error);
+      }
     },
     removeFromLikes() {
-      const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
+      try {
+        const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
+        const updatedLikes = likedProducts.filter((p) => p.id !== this.id);
+        localStorage.setItem("likedProducts", JSON.stringify(updatedLikes));
 
-      // Remove the product from likes
-      const updatedLikes = likedProducts.filter((p) => p.id !== this.id);
-      localStorage.setItem("likedProducts", JSON.stringify(updatedLikes));
-
-      // SweetAlert2 success alert
-      Swal.fire({
-        icon: "info",
-        title: "Mahsulot tanlanganlardan o'chirildi!",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+        Swal.fire({
+          icon: "info",
+          title: "Mahsulot tanlanganlardan o'chirildi!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Failed to remove from likes:", error);
+      }
     },
     addToCart() {
-      const product = {
-        id: this.id, // Ensure each product has a unique ID
-        image: this.imageSrc,
-        name: this.title,
-        description: this.description,
-        price: this.price,
-        quantity: this.quantity,
-      };
+      try {
+        const product = {
+          id: this.id, // Ensure each product has a unique ID
+          image: this.imageSrc,
+          name: this.title,
+          description: this.description,
+          price: this.price,
+          quantity: this.quantity,
+        };
+        const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+        const existingProductIndex = cartProducts.findIndex((p) => p.id === product.id);
 
-      const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+        if (existingProductIndex !== -1) {
+          cartProducts[existingProductIndex].quantity += this.quantity;
+        } else {
+          cartProducts.push(product);
+        }
 
-      // Check if the product already exists in the cart
-      const existingProductIndex = cartProducts.findIndex((p) => p.id === product.id);
+        localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+        window.dispatchEvent(new Event("cart-updated"));
 
-      if (existingProductIndex !== -1) {
-        // If product exists, update its quantity
-        cartProducts[existingProductIndex].quantity += this.quantity;
-      } else {
-        // Otherwise, add it as a new product
-        cartProducts.push(product);
+        Swal.fire({
+          icon: "success",
+          title: "Mahsulot savatga qo'shildi!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Failed to add to cart:", error);
       }
-
-      // Save updated cart back to localStorage
-      localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-      window.dispatchEvent(new Event("cart-updated"));
-
-      // SweetAlert2 success alert
-      Swal.fire({
-        icon: 'success',
-        title: 'Mahsulot savatga qo\'shildi!',
-        timer: 1500,
-        showConfirmButton: false,
-      });
     },
   },
 };
-
 </script>
+
 
 
 
@@ -426,7 +463,8 @@ export default {
     background-color: gray;
     margin-top: 10px;
   }
-  .tavsiya{
+
+  .tavsiya {
     flex-wrap: wrap;
   }
 
@@ -438,24 +476,28 @@ export default {
   .tavsiya {
     flex-direction: row;
   }
-  .aloqa{
+
+  .aloqa {
     font-size: 12px;
   }
-  
+
 
 }
+
 @media screen and (max-width: 550px) {
- .cont1{
-  flex-direction: column-reverse;
-  gap: 20px;
- }
-.quantity-control{
-  text-align: center;
-  gap: 10px;
-}
-.actions{
-  text-align: center;
-}
+  .cont1 {
+    flex-direction: column-reverse;
+    gap: 20px;
+  }
+
+  .quantity-control {
+    text-align: center;
+    gap: 10px;
+  }
+
+  .actions {
+    text-align: center;
+  }
 }
 
 @media (min-width: 13466px) {
@@ -468,4 +510,5 @@ export default {
   .container {
     max-width: 1200px;
   }
-}</style>
+}
+</style>

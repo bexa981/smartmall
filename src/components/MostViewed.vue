@@ -1,14 +1,13 @@
 <template>
-    <div class="main">
-
-
-    <div class="bg-white-50 p-8 container ">
+  <div class="main">
+    <div class="bg-white-50 p-8 container">
       <h2 style="font-weight: 500;" class="text-1xl font-500 mb-6">Ko'p ko'rilganlar</h2>
       <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <div
           v-for="(product, index) in mostViewedProducts"
           :key="index"
-          class="bg-white rounded-lg shadow hover:shadow-lg p-4 transition-transform transform hover:scale-105"
+          class="bg-white rounded-lg shadow hover:shadow-lg p-4 transition-transform transform hover:scale-105 cursor-pointer"
+          @click="navigateToProductDetail(product)"
         >
           <img
             :src="product.image"
@@ -24,20 +23,35 @@
         </div>
       </div>
     </div>
-</div>
-  </template>
+  </div>
+</template>
+
   
-  <script>
-  export default {
-    name: "MostViewed",
-    props: {
-      mostViewedProducts: {
-        type: Array,
-        required: true,
-      },
+<script>
+export default {
+  name: "MostViewed",
+  props: {
+    mostViewedProducts: {
+      type: Array,
+      required: true,
     },
-  };
-  </script>
+  },
+  methods: {
+  navigateToProductDetail(product) {
+    this.$router.push({
+      name: "ProductDetail",
+      params: {
+        id: product.id, // Ensure each product has a unique `id`
+      },
+      query: {
+        product: JSON.stringify(product), // Optional: pass additional product data
+      },
+    });
+  },
+},
+};
+</script>
+
   
   <style scoped>
   .main{

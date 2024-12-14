@@ -21,14 +21,16 @@
 </template>
 
 
+
 <script>
 import MostSold from "@/components/MostSold.vue";
 import MostViewed from "@/components/MostViewed.vue";
 import CategoryHomeVue from "@/components/CategoryHome.vue";
-import CarouselHomeVue from '@/components/CarouselHome.vue';
-import ProductListHomeVue from '@/components/ProductListHome.vue';
+import CarouselHomeVue from "@/components/CarouselHome.vue";
+import ProductListHomeVue from "@/components/ProductListHome.vue";
 import CategoryMediaVue from "@/components/CategoryMedia.vue";
 import AllProductsHome from "@/components/AllProductsHome.vue";
+
 export default {
   components: {
     CategoryHomeVue,
@@ -36,148 +38,47 @@ export default {
     ProductListHomeVue,
     CategoryMediaVue,
     MostViewed,
-    MostSold ,
-    AllProductsHome
+    MostSold,
+    AllProductsHome,
   },
   data() {
     return {
       mostViewedProducts: [
         {
+          id: 3,
           name: "ПВС 2x1,5 электр сими",
           price: "5 818",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png", // Replace with actual URLs
-        },
-        {
-          name: "СИП-4 2x16 сими",
-          price: "6 150",
           image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
         },
-        {
-          name: "ПУНП 2x2,5 электр сими",
-          price: "7 347",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        {
-          name: "Эмалланган сим ПЭТВ-2 1,18",
-          price: "162 000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        {
-          name: "AC 25/4,2 сими",
-          price: "37 329",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-       
+        // More products...
       ],
       mostSoldProducts: [
         {
+          id: 2,
           name: "Product A",
           price: "7,000",
           image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
         },
-        {
-          name: "Product B",
-          price: "12,000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        {
-          name: "Product C",
-          price: "18,000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        {
-          name: "Product D",
-          price: "22,000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        {
-          name: "Product E",
-          price: "29,000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-       
+        // More products...
       ],
       allProducts: [
-        {
-          name: "PUNP 2x1,5 elektr simi",
-          price: "4,776",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x2,5 elektr simi",
-          price: "7,347",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x4,0 elektr simi",
-          price: "11,775",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x1,5 elektr simi",
-          price: "4,776",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x1,5 elektr simi",
-          price: "4,776",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          name: "PUNP 2x1,5 elektr simi",
-          price: "4,776",
-          image: "https://via.placeholder.com/150",
-        },
-        
-       
-        // Add more product objects here
-      ],
+      {
+        id: 1, // Unique identifier
+        name: "PUNP 2x1,5 elektr simi",
+        price: "4,776",
+        image: "https://via.placeholder.com/150",
+      },
+      // More products...
+    ],
     };
+  },
+  methods: {
+    navigateToProductDetail(product) {
+      this.$router.push({
+        name: "ProductDetail",
+        query: { product: JSON.stringify(product) },
+      });
+    },
   },
 };
 </script>
