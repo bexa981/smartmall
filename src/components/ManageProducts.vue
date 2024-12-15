@@ -7,7 +7,7 @@
       <!-- File Input -->
       <div>
         <label class="block font-semibold mb-1">Product Image</label>
-        <input type="file" @change="onFileChange"
+        <input id="fileInput" type="file" accept="image/*" @change="onFileChange"
           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
         <div v-if="newProduct.image" class="mt-2">
           <img :src="newProduct.image" alt="Product Preview" class="w-24 h-24 object-cover rounded" />
@@ -32,12 +32,21 @@
           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" required />
       </div>
       <div>
+        <label class="block font-semibold mb-1">Category</label>
+        <select defaultValue="" v-model="newProduct.category"  class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" required>
+          <option value="" disabled>Select category</option>
+          <option v-for="(category, index) in categories" :key="index" :value="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <div>
         <label class="block font-semibold mb-1">Subcategory</label>
         <select v-model="newProduct.subCategory"
           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" required>
           <option value="" disabled>Select subcategory</option>
-          <option v-for="(subCategory, index) in subCategories" :key="index" :value="subCategory">
-            {{ subCategory }}
+          <option v-for="(subCategory, index) in subCategories" :key="index" :value="`/categories/${newProduct.category}/subCategories/${subCategory.id}`">
+            {{ subCategory.name }}
           </option>
         </select>
       </div>
@@ -200,6 +209,10 @@
 </template>
 
 <script>
+import { getCategories } from '@/service/categories.service';
+import { addProduct } from '@/service/products.service';
+import { uploadFile } from '../service/files.service';
+
 export default {
   props: {
     currentLanguage: {
@@ -209,13 +222,17 @@ export default {
   },
   data() {
     return {
+      categories: [],
       subCategories: [], // Load subcategories from local storage
       products: [], // Products array
+      imageFile: null,
+      imagePreview: '',
       newProduct: {
         image: "",
         name: { Uzbek: "", Russian: "" },
         description: { Uzbek: "", Russian: "" },
         price: null,
+        category: "",
         subCategory: "",
         inStock: true,
         technical: { kod: "", uzunligi: "", kengligi: "", balandligi: "", ogirligi: "" },
@@ -228,10 +245,11 @@ export default {
   },
   created() {
     // Load subcategories and products from local storage
-    const categories = JSON.parse(localStorage.getItem("mainCategories")) || [];
-    this.subCategories = categories.flatMap((category) => category.subCategories);
-    const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-    this.products = storedProducts;
+    // const categories = JSON.parse(localStorage.getItem("mainCategories")) || [];
+    // this.subCategories = categories.flatMap((category) => category.subCategories);
+    // const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+    // this.products = storedProducts;
+    console.log(this.newProduct)
   },
   computed: {
     filteredProducts() {
@@ -245,17 +263,34 @@ export default {
       });
     },
   },
+  watch: {
+    newProduct: {
+      deep: true,
+      handler(value) {
+        if(value.category) {
+          this.subCategories = this.categories.find((category) => category.id === value.category).subCategories
+        }
+      }
+    }
+  },
   methods: {
     onFileChange(event) {
       const file = event.target.files[0];
       if (file) {
-        this.newProduct.image = URL.createObjectURL(file);
+        this.imageFile = file;
+        this.imagePreview = URL.createObjectURL(file);
       }
     },
-    addProduct() {
-      this.products.push({ ...this.newProduct });
-      localStorage.setItem("products", JSON.stringify(this.products));
-      this.resetForm();
+    async addProduct() {
+      const imageUrl = await uploadFile(this.imageFile)
+      const product = {
+        ...this.newProduct,
+        image: imageUrl,
+      }
+      await addProduct(product)
+      this.products.push(product);
+      // localStorage.setItem("products", JSON.stringify(this.products));
+      // this.resetForm();
     },
     deleteProduct(index) {
       this.products.splice(index, 1);
@@ -281,6 +316,8 @@ export default {
     resetForm() {
       this.newProduct = {
         image: "",
+        viewCount: 0,
+        soldCount: 0,
         name: { Uzbek: "", Russian: "" },
         description: { Uzbek: "", Russian: "" },
         price: null,
@@ -289,6 +326,12 @@ export default {
         technical: { kod: "", uzunligi: "", kengligi: "", balandligi: "", ogirligi: "" },
       };
     },
+    async fetchCategories() {
+      this.categories = await getCategories()
+    }
   },
+  mounted() {
+    this.fetchCategories()
+  }
 };
 </script>

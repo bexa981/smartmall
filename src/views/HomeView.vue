@@ -30,6 +30,7 @@ import CarouselHomeVue from "@/components/CarouselHome.vue";
 import ProductListHomeVue from "@/components/ProductListHome.vue";
 import CategoryMediaVue from "@/components/CategoryMedia.vue";
 import AllProductsHome from "@/components/AllProductsHome.vue";
+import { getProducts, getTopProducts } from '../service/products.service'
 
 export default {
   components: {
@@ -43,33 +44,9 @@ export default {
   },
   data() {
     return {
-      mostViewedProducts: [
-        {
-          id: 3,
-          name: "ПВС 2x1,5 электр сими",
-          price: "5 818",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        // More products...
-      ],
-      mostSoldProducts: [
-        {
-          id: 2,
-          name: "Product A",
-          price: "7,000",
-          image: "https://rahmat.uz/photos/products_xl/5180qupVW8Ue.png",
-        },
-        // More products...
-      ],
-      allProducts: [
-      {
-        id: 1, // Unique identifier
-        name: "PUNP 2x1,5 elektr simi",
-        price: "4,776",
-        image: "https://via.placeholder.com/150",
-      },
-      // More products...
-    ],
+      mostViewedProducts: [],
+      mostSoldProducts: [],
+      allProducts: [],
     };
   },
   methods: {
@@ -79,7 +56,20 @@ export default {
         query: { product: JSON.stringify(product) },
       });
     },
+    async fetchProducts() {
+      // // Gets most 5 viewed products
+      this.mostViewedProducts = await getTopProducts(5, 'viewCount')
+
+      // // Gets most 5 sold products
+      this.mostSoldProducts = await getTopProducts(5, 'soldCount')
+
+      // Gets all products
+      this.allProducts = await getProducts()
+    }
   },
+  mounted() {
+    this.fetchProducts();
+  }
 };
 </script>
 

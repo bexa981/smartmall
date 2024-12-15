@@ -12,12 +12,12 @@
         >
           <img
             :src="product.image"
-            :alt="product.name"
+            :alt="product.name?.Uzbek"
             class="w-full h-40 object-cover rounded-t-lg"
           />
           <div class="mt-4">
             <h3 class="font-medium text-sm text-gray-800 truncate mb-2">
-              {{ product.name }}
+              {{ product.name?.Uzbek }}
             </h3>
             <p class="text-green-600 font-semibold text-sm">
               {{ product.price }} UZS

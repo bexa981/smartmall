@@ -14,7 +14,7 @@
         <Card
           :imageSrc="card.image"
           :price="card.price"
-          :description="card.description"
+          :description="card.description?.Uzbek || card.description"
         />
       </router-link>
     </div>
@@ -27,6 +27,7 @@
   
 <script>
 import Card from "@/components/Card.vue";
+import { getProducts, getTopProducts } from "@/service/products.service";
 
 export default {
   name: "ProductListHome",
@@ -35,35 +36,18 @@ export default {
   },
   data() {
     return {
-      cards: [
-        {
-          image: require("@/assets/cardImage.jpeg"),
-          price: 25127,
-          description: "VPP 16 elektr simi",
-        },
-        {
-          image: require("@/assets/cardImage.jpeg"),
-          price: 2527,
-          description: "VPP 16 elektr simi2",
-        },
-        {
-          image: require("@/assets/sim2.jpeg"),
-          price: 25127,
-          description: "GSP 2х0,5 telefon simi",
-        },
-        {
-          image: require("@/assets/sim3.jpeg"),
-          price: 1740,
-          description: "APV 10 elektr simi",
-        },
-        {
-          image: require("@/assets/cardImage.jpeg"),
-          price: 25127,
-          description: "GSP 2х0,5 telefon simi4",
-        },
-      ],
+      cards: [],
     };
   },
+  methods: {
+    async fetchProducts() {
+      this.cards = await getTopProducts(5)
+      console.log(this.cards)
+    }
+  },
+  mounted() {
+    this.fetchProducts();
+  }
 };
 </script>
 <style>

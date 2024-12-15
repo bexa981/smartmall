@@ -5,6 +5,5 @@ import { getFirebaseDocs } from '../utils';
 const imagesCollection = collection(database, 'dashboard-carousel')
 
 export async function getImages() {
-  const data = await getFirebaseDocs(imagesCollection)
-  return data
+  return getFirebaseDocs(imagesCollection)
 }
