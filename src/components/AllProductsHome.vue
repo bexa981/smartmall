@@ -10,6 +10,7 @@
           class="bg-white rounded-lg shadow hover:shadow-lg p-4 transition-transform transform hover:scale-105 cursor-pointer"
           @click="navigateToProductDetail(product)"
         >
+        <p>{{ product.id }}</p>
           <img
             :src="product.image"
             :alt="product.name?.Uzbek"

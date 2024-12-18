@@ -6,13 +6,13 @@
       <div>
         <label class="block font-semibold mb-1">Main Category</label>
         <select
-          v-model="selectedMainCategory"
+          v-model="selectedCategory"
           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
           required
         >
           <option value="" disabled>Select Main Category</option>
-          <option v-for="(category, index) in mainCategories" :key="index" :value="category">
-            {{ category[currentLanguage] }}
+          <option v-for="category in categories" :key="category.id" :value="category">
+            {{ category.id }}
           </option>
         </select>
       </div>
@@ -22,7 +22,7 @@
         <label class="block font-semibold mb-1">Subcategory Name ({{ currentLanguage }})</label>
         <input
           type="text"
-          v-model="newSubCategory.name[currentLanguage]"
+          v-model="subCategoryName"
           placeholder="Enter subcategory name"
           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
           required
@@ -31,8 +31,8 @@
 
       <button
         type="submit"
-        class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 md:col-span-2"
-      >
+        :disabled="!subCategoryName"
+        class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 md:col-span-2 disabled:opacity-10">
         Add Subcategory
       </button>
     </form>
@@ -40,27 +40,27 @@
     <!-- Subcategories List -->
     <ul>
       <li
-        v-for="(category, index) in mainCategories"
-        :key="index"
+        v-for="category in categories"
+        :key="category.id"
         class="mb-4"
       >
-        <h3 class="font-bold text-lg mb-2">{{ category[currentLanguage] }}</h3>
+        <h3 class="font-bold text-lg mb-2">{{ category.id }}</h3>
         <ul>
           <li
             v-for="(subCategory, subIndex) in category.subCategories"
             :key="subIndex"
             class="flex justify-between items-center bg-gray-50 p-3 rounded shadow mb-2"
           >
-            <span>{{ subCategory.name[currentLanguage] }}</span>
+            <span>{{ subCategory.name }}</span>
             <div class="flex space-x-2">
               <button
-                @click="openEditModal(index, subIndex)"
+                @click="openEditModal(index, subCategory.id)"
                 class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700"
               >
                 Edit
               </button>
               <button
-                @click="deleteSubCategory(index, subIndex)"
+                @click="deleteSubCategory(category.id, subCategory.id)"
                 class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700"
               >
                 Delete
@@ -109,10 +109,21 @@
   </section>
 </template>
 <script>
+import { addSubCategory, deleteSubCategory, getCategories } from '@/service/categories.service';
+
 export default {
-  props: ["currentLanguage"],
+  props: {
+    currentLanguage: {
+      default: "Uzbek",
+      type: String,
+    }
+  },
   data() {
     return {
+      savingCategory: false,
+      categories: [],
+      selectedCategory: "",
+      subCategoryName: "",
       mainCategories: [], // Categories will be loaded from local storage
       selectedMainCategory: null, // Tracks the selected main category
       newSubCategory: { name: { Uzbek: "", Russian: "" } }, // Tracks the new subcategory name
@@ -124,41 +135,56 @@ export default {
   },
   created() {
     // Load categories from local storage when the component is created
-    const storedCategories = localStorage.getItem("mainCategories");
-    if (storedCategories) {
-      this.mainCategories = JSON.parse(storedCategories);
-    } else {
-      // Default categories if local storage is empty
-      this.mainCategories = [
-        { Uzbek: "Kabellar", Russian: "Кабели", subCategories: [] },
-        { Uzbek: "Simlar", Russian: "Провода", subCategories: [] },
-        { Uzbek: "Elektrotexnika", Russian: "Электротехника", subCategories: [] },
-      ];
-    }
+    // const storedCategories = localStorage.getItem("mainCategories");
+    // if (storedCategories) {
+    //   this.mainCategories = JSON.parse(storedCategories);
+    // } else {
+    //   // Default categories if local storage is empty
+    //   this.mainCategories = [
+    //     { Uzbek: "Kabellar", Russian: "Кабели", subCategories: [] },
+    //     { Uzbek: "Simlar", Russian: "Провода", subCategories: [] },
+    //     { Uzbek: "Elektrotexnika", Russian: "Электротехника", subCategories: [] },
+    //   ];
+    // }
   },
   methods: {
     saveToLocalStorage() {
       // Save the mainCategories to local storage
       localStorage.setItem("mainCategories", JSON.stringify(this.mainCategories));
     },
-    addSubCategory() {
-      if (!this.selectedMainCategory) return; // Ensure a main category is selected
+    async addSubCategory() {
+      this.savingCategory = true;
+      await addSubCategory(this.selectedCategory.id, this.subCategoryName)
+      this.savingCategory = false;
+      const category = this.categories.find(category => category.id === this.selectedCategory.id)
+      if(!Array.isArray(category.subCategories)) {
+        category.subCategories = []
+      }
+      category.subCategories.push({ name: this.subCategoryName })
+      this.selectedCategory = ""
+      this.subCategoryName = ""
+      // if (!this.selectedMainCategory) return; // Ensure a main category is selected
 
-      // Add the new subcategory to the selected main category
-      this.selectedMainCategory.subCategories.push({ ...this.newSubCategory });
+      // // Add the new subcategory to the selected main category
+      // this.selectedMainCategory.subCategories.push({ ...this.newSubCategory });
 
-      // Save changes to local storage
-      this.saveToLocalStorage();
+      // // Save changes to local storage
+      // this.saveToLocalStorage();
 
-      // Clear the input fields
-      this.newSubCategory = { name: { Uzbek: "", Russian: "" } };
+      // // Clear the input fields
+      // this.newSubCategory = { name: { Uzbek: "", Russian: "" } };
     },
-    deleteSubCategory(categoryIndex, subCategoryIndex) {
+    async deleteSubCategory(categoryIndex, subCategoryIndex) {
+      await deleteSubCategory(categoryIndex, subCategoryIndex)
+      this.categories = this.categories.map(category => category.id === categoryIndex ? ({
+        ...category,
+        subCategories: category.subCategories.filter((subCategory) => subCategory.id !== subCategoryIndex)
+      }): category)
       // Remove the subcategory from the main category
-      this.mainCategories[categoryIndex].subCategories.splice(subCategoryIndex, 1);
+      // this.mainCategories[categoryIndex].subCategories.splice(subCategoryIndex, 1);
 
-      // Save changes to local storage
-      this.saveToLocalStorage();
+      // // Save changes to local storage
+      // this.saveToLocalStorage();
     },
     openEditModal(categoryIndex, subCategoryIndex) {
       // Open the modal and set the edited subcategory
@@ -188,7 +214,13 @@ export default {
       // Close the modal
       this.closeEditModal();
     },
+    async fetchCategories() {
+      this.categories = await getCategories()
+    }
   },
+  mounted() {
+    this.fetchCategories()
+  }
 };
 </script>
 

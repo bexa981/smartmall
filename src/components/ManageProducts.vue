@@ -1,5 +1,6 @@
 <template>
-  <section class="bg-white shadow-md rounded-lg p-6">
+  <h1 class="text-4xl font-bold text-center my-8 text-orange-300" v-if="loading">Loading...</h1>
+  <section v-else  class="bg-white shadow-md rounded-lg p-6">
     <h2 class="text-2xl font-semibold mb-4">Manage Products</h2>
 
     <!-- Add Product Form -->
@@ -121,8 +122,15 @@
       <input type="text" v-model="filters.name" placeholder="Search by product name"
         class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
       <select v-model="filters.subCategory"
+      class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500">
+        <option value="">Categories</option>
+        <option v-for="(category, index) in categories" :key="index" :value="category">
+          {{ category.name }}
+        </option>
+      </select>
+      <select v-model="filters.subCategory"
         class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500">
-        <option value="">All Subcategories</option>
+        <option value="">Subcategories</option>
         <option v-for="(subCategory, index) in subCategories" :key="index" :value="subCategory">
           {{ subCategory }}
         </option>
@@ -169,7 +177,7 @@
               class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">
               Edit
             </button>
-            <button @click="deleteProduct(index)" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">
+            <button @click="deleteProduct(index, product.id)" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">
               Delete
             </button>
           </td>
@@ -210,7 +218,7 @@
 
 <script>
 import { getCategories } from '@/service/categories.service';
-import { addProduct } from '@/service/products.service';
+import { addProduct, deleteProduct, getProducts } from '@/service/products.service';
 import { uploadFile } from '../service/files.service';
 
 export default {
@@ -223,10 +231,10 @@ export default {
   data() {
     return {
       categories: [],
-      subCategories: [], // Load subcategories from local storage
       products: [], // Products array
       imageFile: null,
       imagePreview: '',
+      loading: false,
       newProduct: {
         image: "",
         name: { Uzbek: "", Russian: "" },
@@ -237,7 +245,7 @@ export default {
         inStock: true,
         technical: { kod: "", uzunligi: "", kengligi: "", balandligi: "", ogirligi: "" },
       },
-      filters: { name: "", subCategory: "", kod: "", price: "" },
+      filters: { name: "", subCategory: "", category: "", kod: "", price: "" },
       isEditModalOpen: false, // Controls the modal visibility
       editedProduct: null, // Product being edited
       editedProductIndex: null,
@@ -249,7 +257,7 @@ export default {
     // this.subCategories = categories.flatMap((category) => category.subCategories);
     // const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
     // this.products = storedProducts;
-    console.log(this.newProduct)
+    // console.log(this.newProduct)
   },
   computed: {
     filteredProducts() {
@@ -282,19 +290,21 @@ export default {
       }
     },
     async addProduct() {
+      this.loading = true;
       const imageUrl = await uploadFile(this.imageFile)
       const product = {
         ...this.newProduct,
         image: imageUrl,
       }
-      await addProduct(product)
+      const productId = await addProduct(product)
+      product.id = productId;
       this.products.push(product);
-      // localStorage.setItem("products", JSON.stringify(this.products));
-      // this.resetForm();
+      this.resetForm();
+      this.loading = false;
     },
-    deleteProduct(index) {
+    async deleteProduct(index, productId) {
+      await deleteProduct(productId)
       this.products.splice(index, 1);
-      localStorage.setItem("products", JSON.stringify(this.products));
     },
     openEditModal(product, index) {
       this.editedProduct = { ...product };
@@ -326,12 +336,14 @@ export default {
         technical: { kod: "", uzunligi: "", kengligi: "", balandligi: "", ogirligi: "" },
       };
     },
-    async fetchCategories() {
-      this.categories = await getCategories()
+    async loadPage() {
+      this.loading = true;
+      this.categories = await getCategories();
+      this.loading = false;
     }
   },
   mounted() {
-    this.fetchCategories()
+    this.loadPage()
   }
 };
 </script>
