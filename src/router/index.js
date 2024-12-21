@@ -3,7 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import Yordam from "../views/Yordam.vue";
 import ProductDetail from "@/views/ProductDetail.vue";
 import CategoryPage from "../views/CategoryPage.vue";
-import AllProducts from "@/views/AllProducts.vue";
+import AllProducts from "../views/AllProducts.vue";
 import LikesPage from "@/views/LikesPage.vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import CartPage from "@/views/CartPage.vue";
@@ -15,7 +15,7 @@ import TermsOfUse from "@/views/TermsOfUse.vue"; // Component for terms of use
 import AboutUs from "@/views/AboutUs.vue"; // Component for about us
 import BlankLayout from "@/layouts/BlankLayout.vue";
 import PrivacyPolicy from "@/views/PrivacyPolicy.vue"; // Component for privacy policy
-
+import DynamicProducts from "../components/DynamicProducts.vue";
 const routes = [
   {
     path: "/",
@@ -27,7 +27,32 @@ const routes = [
       { path: "cart", component: CartPage, name: "CartPage" },
       { path: "likes", component: LikesPage, name: "LikesPage" },
       {
-        path: "/product-detail/:id",
+        path: "/register-methods",
+        name: "RegisterMethods",
+        component: RegisterMethods,
+      },
+      {
+        path: "/order-methods",
+        name: "OrderMethods",
+        component: OrderMethods,
+      },
+      {
+        path: "/terms-of-use",
+        name: "TermsOfUse",
+        component: TermsOfUse,
+      },
+      {
+        path: "/about-us",
+        name: "AboutUs",
+        component: AboutUs,
+      },
+      {
+        path: "/privacy-policy",
+        name: "PrivacyPolicy",
+        component: PrivacyPolicy,
+      },
+      {
+        path: "product-detail/:id",
         component: ProductDetail,
         name: "ProductDetail",
         props: true,
@@ -46,6 +71,11 @@ const routes = [
     children: [{ path: "", component: LoginPage, name: "LoginPage" }],
   },
   {
+    path: "/dynamic-products", // URL path
+    name: "DynamicProductsPage", // Route name
+    component: DynamicProducts, // Associated component
+  },
+  {
     path: "/admin",
     component: BlankLayout,
     children: [
@@ -56,31 +86,6 @@ const routes = [
         meta: { requiresAuth: true },
       },
     ],
-  },
-  {
-    path: "/register-methods",
-    name: "RegisterMethods",
-    component: RegisterMethods,
-  },
-  {
-    path: "/order-methods",
-    name: "OrderMethods",
-    component: OrderMethods,
-  },
-  {
-    path: "/terms-of-use",
-    name: "TermsOfUse",
-    component: TermsOfUse,
-  },
-  {
-    path: "/about-us",
-    name: "AboutUs",
-    component: AboutUs,
-  },
-  {
-    path: "/privacy-policy",
-    name: "PrivacyPolicy",
-    component: PrivacyPolicy,
   },
 ];
 

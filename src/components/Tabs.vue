@@ -1,103 +1,102 @@
 <template>
-    <div class="tabs">
-      <!-- Tabs Navigation -->
-      <div class="tabs-navigation">
-        <button
-          v-for="(tab, index) in filteredTabs"
-          :key="index"
-          :class="['tab-button', { active: activeTab === index }]"
-          @click="setActiveTab(index)"
-        >
-          {{ tab.title }}
-        </button>
-      </div>
-  
-      <!-- Tabs Content -->
-      <div class="tabs-content">
-        <div v-if="activeTab !== null">
-          <!-- Texnik xususiyatlari -->
-          <div v-if="activeTab === 1">
-            <table class="tech-specs-table">
-              <tbody>
-                <tr v-for="(value, key) in techSpecs" :key="key">
-                  <td>{{ key }}</td>
-                  <td>{{ value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <!-- Mahsulot haqida savollar -->
-          <div v-else-if="activeTab === 2">
-            <h4>Mahsulot haqida savolingiz bormi?</h4>
-            <form @submit.prevent="submitQuestion" class="question-form">
-              <input
-                type="text"
-                v-model="question"
-                placeholder="Savolingizni bering"
-                class="form-input"
-                required
-              />
-              <input
-                type="text"
-                v-model="name"
-                placeholder="Sizning ismingiz"
-                class="form-input"
-                required
-              />
-              <button type="submit" class="submit-button">So'rash</button>
-            </form>
-          </div>
-          <!-- Default Tab Content -->
-          <div v-else>
-            <p>{{ filteredTabs[activeTab]?.content }}</p>
-          </div>
+  <div class="tabs">
+    <!-- Tabs Navigation -->
+    <div class="tabs-navigation">
+      <button
+        v-for="(tab, index) in filteredTabs"
+        :key="index"
+        :class="['tab-button', { active: activeTab === index }]"
+        @click="setActiveTab(index)"
+      >
+        {{ tab.title }}
+      </button>
+    </div>
+
+    <!-- Tabs Content -->
+    <div class="tabs-content">
+      <div v-if="activeTab !== null">
+        <!-- Texnik xususiyatlari -->
+        <div v-if="activeTab === 1">
+          <table class="tech-specs-table">
+            <tbody>
+              <tr v-for="(value, key) in techSpecs" :key="key">
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Mahsulot haqida savollar -->
+        <div v-else-if="activeTab === 2">
+          <h4>Mahsulot haqida savolingiz bormi?</h4>
+          <form @submit.prevent="submitQuestion" class="question-form">
+            <input
+              type="text"
+              v-model="question"
+              placeholder="Savolingizni bering"
+              class="form-input"
+              required
+            />
+            <input
+              type="text"
+              v-model="name"
+              placeholder="Sizning ismingiz"
+              class="form-input"
+              required
+            />
+            <button type="submit" class="submit-button">So'rash</button>
+          </form>
+        </div>
+        <!-- Default Tab Content -->
+        <div v-else>
+          <p>{{ filteredTabs[activeTab]?.content }}</p>
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
-  export default {
-    data() {
-      return {
-        activeTab: 0, // Default active tab
-        tabs: [
-          { title: "Tavsif", content: "Bu mahsulot haqida tavsif." },
-          { title: "Texnik xususiyatlari", content: "" }, // Content is replaced with a table
-          { title: "Mahsulot haqida savollar (0)", content: "" }, // Content is replaced with input form
-        ],
-        techSpecs: {
-          Kod: "kB7SSZeDaF",
-          Uzunligi: "150.00 Metr",
-          Kengligi: "0.40 Metr",
-          Balangligi: "0.22 Metr",
-          Ogirligi: "30.00 Kilogramm",
-        },
-        question: "", // Input field for the question
-        name: "", // Input field for the name
-      };
+export default {
+  props: {
+    techSpecs: {
+      type: Object, // Texnik xususiyatlar obyektini qabul qilish
+      required: true,
     },
-    computed: {
-      filteredTabs() {
-        return this.tabs;
-      },
+  },
+  data() {
+    return {
+      activeTab: 0, // Default active tab
+      tabs: [
+        { title: "Tavsif", content: "Bu mahsulot haqida tavsif." },
+        { title: "Texnik xususiyatlari", content: "" }, // Content is replaced with a table
+        { title: "Mahsulot haqida savollar (0)", content: "" }, // Content is replaced with input form
+      ],
+      question: "", // Savol input maydoni
+      name: "", // FIO input maydoni
+    };
+  },
+  computed: {
+    filteredTabs() {
+      return this.tabs;
     },
-    methods: {
-      setActiveTab(index) {
-        this.activeTab = index;
-      },
-      submitQuestion() {
-        if (this.question && this.name) {
-          alert(`Savolingiz yuborildi: "${this.question}", FIO: "${this.name}"`);
-          this.question = "";
-          this.name = "";
-        } else {
-          alert("Iltimos, barcha maydonlarni to'ldiring!");
-        }
-      },
+  },
+  methods: {
+    setActiveTab(index) {
+      this.activeTab = index;
     },
-  };
-  </script>
+    submitQuestion() {
+      if (this.question && this.name) {
+        alert(`Savolingiz yuborildi: "${this.question}", FIO: "${this.name}"`);
+        this.question = "";
+        this.name = "";
+      } else {
+        alert("Iltimos, barcha maydonlarni to'ldiring!");
+      }
+    },
+  },
+};
+</script>
   
   <style scoped>
   .tabs {

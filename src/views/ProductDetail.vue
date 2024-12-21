@@ -70,7 +70,7 @@
 
         </div>
       </div>
-      <TabsVue />
+      <TabsVue :techSpecs="product?.technical || {}" :description="product?.description || {}" />
 
     </div>
   </div>
@@ -128,15 +128,15 @@ export default {
   methods: {
     async fetchProduct(id) {
       try {
-        // Replace with an actual API call or data fetching logic
-        const response = await fetch(`/api/products/${id}`);
-        if (response.ok) {
-          this.product = await response.json();
+        // Mahsulotni Firestore'dan olish
+        const fetchedProduct = await getProduct(id);
+        if (fetchedProduct) {
+          this.product = fetchedProduct; // Mahsulotni saqlash
         } else {
           this.handleMissingData();
         }
       } catch (error) {
-        console.error("Failed to fetch product:", error);
+        console.error("Mahsulotni olishda xatolik:", error);
         this.handleMissingData();
       }
     },

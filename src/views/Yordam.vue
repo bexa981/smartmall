@@ -2,7 +2,7 @@
   <div class="main">
     <div class="container links">
             <router-link to="/">Bosh sahifa</router-link> >
-            <router-link to="/cart">Savat</router-link>
+            <router-link to="/yordam">Bog'lanish</router-link>
         </div>
     <div class="container">
       <div class="contact-page">

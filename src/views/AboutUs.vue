@@ -1,5 +1,9 @@
 <template>
-
+<div class="main">
+    <div class="container links">
+            <router-link to="/">Bosh sahifa</router-link> >
+            <router-link to="/about-us">Biz haqimizda</router-link>
+        </div>
     <div class="about-us">
         <div class="about-images">
             <img class="rasm1" src="../assets/aboutUs.png" alt="about us">
@@ -35,6 +39,8 @@
         </div>
 
     </div>
+</div>
+    
 </template>
 <script>
 
@@ -50,7 +56,19 @@
     margin-right: auto;
     margin-left: auto;
 }
-
+.links a {
+    font-size: 13px;
+    color: black;
+    text-decoration: none;
+    transition: .3s;
+   
+}
+.links {
+    margin-bottom: 30px;
+}
+.links a:hover{
+    color: green;
+}
 .rasm1 {
     width: 700px;
 }
@@ -65,9 +83,11 @@
     
     transition: 0.5s;
 }
-
+.main{
+    background-color: white;
+}
 .container {
-    margin-top: 30px;
+   
     width: 100%;
     padding-right: 8px;
     padding-left: 8px;
@@ -109,12 +129,7 @@ li {
         max-width: 1200px;
     }
 }
-@media (min-width: 1400px) {
-    .container {
-        max-width: 1400px;
 
-    }
-}
 @media only screen and (max-width: 610px) {
  .rasm2{
     width: 100%;
