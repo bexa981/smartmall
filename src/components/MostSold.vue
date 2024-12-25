@@ -11,12 +11,12 @@
         >
           <img
             :src="product.image"
-            :alt="product.name?.Uzbek"
+            :alt="product.name"
             class="w-full h-40 object-cover rounded-t-lg"
           />
           <div class="mt-4">
             <h3 class="font-normal text-xs text-gray-800 mb-2">
-              {{ product.name?.Uzbek }}
+              {{ product.name}}
             </h3>
             <p class="text-green-600 font-semibold text-sm">
               {{ product.price }} UZS
@@ -28,31 +28,44 @@
   </div>
 </template>
 
+
   
 <script>
+import { getProductsByGroup } from "@/service/products.service";
+
 export default {
   name: "MostSold",
-  props: {
-    mostSoldProducts: {
-      type: Array,
-      required: true,
-    },
+  data() {
+    return {
+      mostSoldProducts: [], // Ko‘p sotilgan mahsulotlar
+    };
   },
   methods: {
-  navigateToProductDetail(product) {
-    this.$router.push({
-      name: "ProductDetail",
-      params: {
-        id: product.id, // Ensure each product has a unique `id`
-      },
-      query: {
-        product: JSON.stringify(product), // Optional: pass additional product data
-      },
-    });
+    async fetchMostSoldProducts() {
+      try {
+        this.mostSoldProducts = await getProductsByGroup("mostSold"); // "mostSold" guruhidan mahsulotlar
+      } catch (error) {
+        console.error("Ko'p sotilgan mahsulotlarni yuklashda xatolik:", error);
+      }
+    },
+    navigateToProductDetail(product) {
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          id: product.id, // Har bir mahsulot uchun unikal `id`
+        },
+        query: {
+          product: JSON.stringify(product), // Qo'shimcha ma'lumotlar
+        },
+      });
+    },
   },
-},
+  mounted() {
+    this.fetchMostSoldProducts(); // Boshlanishida yuklash
+  },
 };
 </script>
+
 
   
   <style scoped>

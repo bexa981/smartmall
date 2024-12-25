@@ -81,39 +81,45 @@
   
   .carousel-container {
     display: flex;
-    justify-content: center;
+    
     align-items: center;
-    margin: 20px;
-    height: 350px;
+    margin: 10px 10px;
+    height: auto;
   }
   
   .carousel {
-    border-radius: 10px;
+   
     position: relative;
     width: 100%;
-    max-width: 900px;
+    /* max-width: 900px; */
     background-color: white;
     height: auto; /* Set a fixed height for the carousel */
     overflow: hidden;
   }
-  @media only screen and (max-width: 1350px) {
-.carousel{
-  height: auto;
-  max-width: 700px;
-}
-.carousel-container{
-  margin: 10px 0px;
-  height: auto;
-}
-  }
+  
   @media only screen and (max-width: 700px) {
   .carousel-container{
     margin: 2px 5px;
   }
   .carousel{
-  
+    width: 100%;
     border-radius: 0px;
   }
+  .carousel-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    margin: 10px 10px;
+    height: auto;
+  }
+  }
+  @media only screen and (max-width: 500px) {
+.carousel-container{
+  width: 97%;
+  align-items: center;
+  justify-content: center;
+  margin: 6px;
+}
   }
   
   .carousel-images {

@@ -11,12 +11,12 @@
         >
           <img
             :src="product.image"
-            :alt="product.name?.Uzbek"
+            :alt="product.name"
             class="w-full h-40 object-cover rounded-t-lg"
           />
           <div class="mt-4">
             <h3 class="font-normal text-xs text-gray-800 mb-2">
-              {{ product.name?.Uzbek }}
+              {{ product.name}}
             </h3>
             <p class="text-green-600 font-semibold text-sm">{{ product.price }} UZS</p>
           </div>
@@ -26,29 +26,39 @@
   </div>
 </template>
 
-  
 <script>
+import { getProductsByGroup } from "@/service/products.service";
+
 export default {
   name: "MostViewed",
-  props: {
-    mostViewedProducts: {
-      type: Array,
-      required: true,
-    },
+  data() {
+    return {
+      mostViewedProducts: [], // Eng ko'p ko'rilgan mahsulotlar
+    };
   },
   methods: {
-  navigateToProductDetail(product) {
-    this.$router.push({
-      name: "ProductDetail",
-      params: {
-        id: product.id, // Ensure each product has a unique `id`
-      },
-      query: {
-        product: JSON.stringify(product), // Optional: pass additional product data
-      },
-    });
+    async fetchMostViewedProducts() {
+      try {
+        this.mostViewedProducts = await getProductsByGroup("mostViewed"); // Firebase'dan mahsulotlarni yuklash
+      } catch (error) {
+        console.error("Ko'p ko'rilgan mahsulotlarni yuklashda xatolik:", error);
+      }
+    },
+    navigateToProductDetail(product) {
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          id: product.id, // Mahsulotning unikal `id`
+        },
+        query: {
+          product: JSON.stringify(product), // Qo'shimcha ma'lumotlar
+        },
+      });
+    },
   },
-},
+  mounted() {
+    this.fetchMostViewedProducts(); // Komponent yuklanganda mahsulotlarni olish
+  },
 };
 </script>
 

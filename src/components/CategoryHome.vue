@@ -11,7 +11,7 @@
         <li v-for="(category, index) in categories" :key="index" @mouseenter="hoverCategory(category)"
           class="flex items-center  mb-2 text-xs cursor-pointer hover:text-green-900 p-2 rounded">
           <i class="w-8" :class="category.icon"></i>
-          {{ category.name }}
+          {{ category.id }}
         </li>
       </ul>
     </aside>

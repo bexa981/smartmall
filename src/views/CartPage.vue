@@ -248,8 +248,7 @@ table {
 
 .nameImg {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 5px;
     gap: 15px;
     font-size: 14px;
     font-weight: 300;
@@ -286,6 +285,7 @@ th {
 
 tbody tr {
     text-align: center;
+  
 }
 
 .main-cart {
@@ -316,8 +316,8 @@ tbody tr {
 
 .product-image {
     width: 100px;
-
-    object-fit: cover;
+     height: 100px;
+    object-fit:contain;
 }
 @media screen and (max-width: 650px) {
   .thTop{

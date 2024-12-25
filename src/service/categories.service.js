@@ -1,4 +1,4 @@
-import { db as database } from '../firebaseConfig';
+import { db as database } from "../firebaseConfig";
 import {
   addDoc,
   collection,
@@ -10,37 +10,40 @@ import {
   limit,
   startAfter,
   updateDoc,
-} from 'firebase/firestore';
-import { getFirebaseDocs } from '../utils';
+} from "firebase/firestore";
+import { getFirebaseDocs } from "../utils";
 
-const categoriesCollection = collection(database, 'categories');
-const productsCollection = collection(database, 'products'); // Mahsulotlar kolleksiyasi
+const categoriesCollection = collection(database, "categories");
+const productsCollection = collection(database, "products"); // Mahsulotlar kolleksiyasi
 
 // Kategoriyalarni olish
 export async function getCategories() {
-    const categories = await getFirebaseDocs(categoriesCollection);
-    for (let category of categories) {
-      const subCategoriesCollection = collection(database, `categories/${category.id}/subCategories`);
-      const subCategories = await getFirebaseDocs(subCategoriesCollection);
-  
-      category.subCategories = subCategories.map(sub => ({
-        id: sub.id,
-        name: sub.name // Oddiy string sifatida ishlatiladi
-      }));
-    }
-    return categories;
+  const categories = await getFirebaseDocs(categoriesCollection);
+  for (let category of categories) {
+    const subCategoriesCollection = collection(
+      database,
+      `categories/${category.id}/subCategories`
+    );
+    const subCategories = await getFirebaseDocs(subCategoriesCollection);
+
+    category.subCategories = subCategories.map((sub) => ({
+      id: sub.id,
+      name: sub.name, // Oddiy string sifatida ishlatiladi
+    }));
   }
+  return categories;
+}
 
 // Subkategoriya mahsulotlarini olish (filtrlash va sahifalash)
 export async function getProductsBySubCategory(
   subCategoryName,
-  pageSize = 10,
+  pageSize = 6,
   lastDoc = null
 ) {
   try {
     let productQuery = query(
       productsCollection,
-      where('subCategory.name', '==', subCategoryName),
+      where("subCategory.name", "==", subCategoryName),
       limit(pageSize)
     );
 
@@ -58,34 +61,63 @@ export async function getProductsBySubCategory(
     const newLastDoc = snapshot.docs[snapshot.docs.length - 1];
     return { products, lastDoc: newLastDoc };
   } catch (error) {
-    console.error('Error fetching products by subcategory:', error);
+    console.error("Error fetching products by subcategory:", error);
     throw error;
   }
 }
 
 // Subkategoriya qo'shish
 export async function addSubCategory(categoryId, subCategoryName) {
-    const subCategoriesCollection = collection(database, `categories/${categoryId}/subCategories`);
-    const result = await addDoc(subCategoriesCollection, {
-      name: subCategoryName // Oddiy string sifatida saqlash
+  const subCategoriesCollection = collection(
+    database,
+    `categories/${categoryId}/subCategories`
+  );
+  const result = await addDoc(subCategoriesCollection, {
+    name: subCategoryName, // Oddiy string sifatida saqlash
+  });
+  return result;
+}
+export async function getCategoriesWithSubCategories() {
+  try {
+    const snapshot = await getDocs(categoriesCollection);
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        subCategories: (data.subCategories || []).map((sub) => ({
+          ...sub,
+          href: `/category/${doc.id}/subcategory/${sub.id}`, // Dinamik havola yaratish
+        })),
+      };
     });
-    return result;
+  } catch (error) {
+    console.error("Kategoriyalarni olishda xatolik:", error);
+    throw error;
   }
-
+}
 // Subkategoriya o'chirish
 export async function deleteSubCategory(categoryId, subCategoryId) {
   const result = await deleteDoc(
-    doc(database, 'categories', categoryId, 'subCategories', subCategoryId)
+    doc(database, "categories", categoryId, "subCategories", subCategoryId)
   );
   return result;
 }
-export async function updateSubCategory(categoryId, subCategoryId, updatedSubCategory) {
-    try {
-      const subCategoryDocRef = doc(database, `categories/${categoryId}/subCategories`, subCategoryId);
-      await updateDoc(subCategoryDocRef, updatedSubCategory);
-      console.log("Subkategoriya muvaffaqiyatli yangilandi:", updatedSubCategory);
-    } catch (error) {
-      console.error("Subkategoriya yangilashda xatolik:", error);
-      throw error;
-    }
+export async function updateSubCategory(
+  categoryId,
+  subCategoryId,
+  updatedSubCategory
+) {
+  try {
+    const subCategoryDocRef = doc(
+      database,
+      `categories/${categoryId}/subCategories`,
+      subCategoryId
+    );
+    await updateDoc(subCategoryDocRef, updatedSubCategory);
+    console.log("Subkategoriya muvaffaqiyatli yangilandi:", updatedSubCategory);
+  } catch (error) {
+    console.error("Subkategoriya yangilashda xatolik:", error);
+    throw error;
   }
+}

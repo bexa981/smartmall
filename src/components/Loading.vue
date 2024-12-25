@@ -4,9 +4,9 @@
             <!-- Logo Animation -->
             <img src="@/assets/smartmallLogoHd.svg" alt="Smartmall Logo" class="animate-pulse w-max rounded-full" />
             <!-- Rotating Ring -->
-            <div
+            <!-- <div
                 class="absolute top-[10]  left-[40%] w-32 h-32 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin">
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

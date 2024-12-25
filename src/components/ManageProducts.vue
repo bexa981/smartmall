@@ -166,10 +166,12 @@
           v-model="filters.name"
           placeholder="Search by product name"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
+          @input="searchProducts"
         />
         <select
           v-model="filters.category"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
+          @change="filterProducts"
         >
           <option value="">Categories</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
@@ -179,24 +181,19 @@
         <select
           v-model="filters.subCategory"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
+          @change="filterProducts"
         >
           <option value="">Subcategories</option>
-          <option v-for="sub in subCategories" :key="sub.id" :value="sub.name">{{ sub.name }}</option>
+          <option v-for="sub in subCategories" :key="sub.id" :value="sub">{{ sub.name }}</option>
         </select>
-        <input
-          type="text"
-          v-model="filters.kod"
-          placeholder="Filter by Kod"
-          class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-        />
         <input
           type="number"
           v-model="filters.price"
-          placeholder="Filter by Price"
+          placeholder="Filter by Max Price"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
+          @input="filterProducts"
         />
       </div>
-
       <!-- Product Table -->
       <table class="table-auto w-full border-collapse border border-gray-300 mt-8">
         <thead class="bg-gray-200">
@@ -212,7 +209,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(product, index) in filteredProducts" :key="index" class="hover:bg-gray-100">
+          <tr v-for="(product, index) in products" :key="index" class="hover:bg-gray-100">
             <td class="border border-gray-300 p-2">
               <img :src="product.image" alt="Product Image" class="w-16 h-16 object-cover rounded" />
             </td>
@@ -243,7 +240,7 @@
       </table>
 
       <!-- Pagination Controls -->
-      <div class="mt-4 flex justify-between">
+     <div class="mt-4 flex justify-between">
         <button @click="loadPreviousPage" :disabled="!hasPreviousPage" class="bg-gray-300 px-4 py-2 rounded">
           Previous
         </button>
@@ -293,7 +290,7 @@
 
 <script>
 import { getCategories } from '@/service/categories.service';
-import { addProduct, deleteProduct, getPaginatedProducts, updateProduct } from '@/service/products.service';
+import { addProduct, deleteProduct, getPaginatedProducts,filterProductsByCriteria,searchProductsByName, updateProduct } from '@/service/products.service';
 import { uploadFile } from '@/service/files.service';
 
 export default {
@@ -330,18 +327,18 @@ export default {
       editedProductIndex: null,
     };
   },
-  computed: {
-    filteredProducts() {
-      return this.products.filter((product) => {
-        return (
-          (this.filters.name === "" || product.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-          (this.filters.subCategory === "" || product.subCategory === this.filters.subCategory) &&
-          (this.filters.kod === "" || product.technical.kod.includes(this.filters.kod)) &&
-          (this.filters.price === "" || product.price <= this.filters.price)
-        );
-      });
-    },
-  },
+  // computed: {
+  //   filteredProducts() {
+  //     return this.products.filter((product) => {
+  //       return (
+  //         (this.filters.name === "" || product.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+  //         (this.filters.subCategory === "" || product.subCategory === this.filters.subCategory) &&
+  //         (this.filters.kod === "" || product.technical.kod.includes(this.filters.kod)) &&
+  //         (this.filters.price === "" || product.price <= this.filters.price)
+  //       );
+  //     });
+  //   },
+  // },
   watch: {
     // Subkategoriyalarni avtomatik yuklash
     "newProduct.category": function (categoryId) {
@@ -353,12 +350,12 @@ export default {
     async loadInitialPage() {
       try {
         this.loading = true;
-        const { products, lastVisible } = await getPaginatedProducts(null, 10);
+        const { products, lastVisible } = await getPaginatedProducts(null, 6);
         this.products = products;
         this.lastVisibleProduct = lastVisible;
-        this.hasMorePages = products.length === 10;
+        this.hasMorePages = products.length === 6;
       } catch (error) {
-        console.error("Mahsulotlarni yuklashda xatolik:", error);
+        console.error("Error loading products:", error);
       } finally {
         this.loading = false;
       }
@@ -370,21 +367,32 @@ export default {
         const { products, lastVisible } = await getPaginatedProducts(this.lastVisibleProduct, 10);
         this.products = [...this.products, ...products];
         this.lastVisibleProduct = lastVisible;
-        this.hasMorePages = products.length === 10;
+        this.hasMorePages = products.length === 5;
       } catch (error) {
-        console.error("Keyingi sahifani yuklashda xatolik:", error);
+        console.error("Error loading next page:", error);
       }
+    },
+    async loadPreviousPage() {
+      // Implement if necessary
     },
     async loadCategories() {
       try {
         const categories = await getCategories();
         this.categories = categories.map((cat) => ({
           id: cat.id,
-          name: cat.id, // Kategoriya nomi sifatida `id` ishlatiladi
+          name: cat.id,
           subCategories: cat.subCategories || [],
         }));
       } catch (error) {
-        console.error("Kategoriyalarni olishda xatolik:", error);
+        console.error("Error loading categories:", error);
+      }
+    },
+    async searchProducts() {
+      try {
+        const products = await searchProductsByName(this.filters.name);
+        this.products = products;
+      } catch (error) {
+        console.error("Error searching products:", error);
       }
     },
     async onFileChange(event) {
@@ -415,6 +423,19 @@ export default {
         alert("Mahsulot qo'shishda xatolik yuz berdi.");
       } finally {
         this.loading = false;
+      }
+    },
+    async filterProducts() {
+      try {
+        const criteria = {
+          category: this.filters.category,
+          subCategory: this.filters.subCategory,
+          maxPrice: this.filters.price,
+        };
+        const products = await filterProductsByCriteria(criteria);
+        this.products = products;
+      } catch (error) {
+        console.error("Error filtering products:", error);
       }
     },
     async deleteProduct(index, productId) {

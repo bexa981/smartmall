@@ -85,13 +85,6 @@ export default {
 
 }
 
-.bg-wall {
-  width: 250px;
-  background-image: url(../assets/simRight.jpg);
-  background-size: cover;
-  background-position: center;
-  margin-top: 20px;
-}
 @media only screen and (max-width: 850px) {
   .category-home{
     display: none!important;
@@ -102,19 +95,11 @@ export default {
 .rightTop{
   justify-content: center;
 }
-.bg-wall{
-  width: 200px;
 
 }
-}
-@media only screen and (max-width: 900px) {
-.bg-wall{
-  display: none;
-}
-}
+
 .container {
     width: 100%;
-    
     margin-top: 30px;
     margin-right: auto;
     margin-left: auto;

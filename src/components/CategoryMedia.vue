@@ -50,12 +50,13 @@ export default {
 .category-media a{
     background-color: #fff;
     border-radius: 50%;
-    padding: 10px;
+    
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60px;
+    width: 40px;
+    height: 40px;
     transition: .3s;
 }
 .category-media a:hover{
@@ -65,6 +66,7 @@ ul {
     list-style-type: none;
     padding: 0;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
 }

@@ -20,22 +20,25 @@
                             <!-- Category List -->
                             <div class="category-list">
                                 <div class="category" v-for="(category, index) in categories" :key="index"
-                                    @mouseenter="setActiveCategory(index)">
+                                    @mouseenter="hoverCategory(category)">
                                     <div class="category-header">
-                                        <img :src="category.icon" alt="Category Icon" />
-                                        <span>{{ category.name }}</span>
+                                        <i class="w-8" :class="category.icon"></i>
+                                        <span>{{ category.id }}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Subcategory Links -->
-                            <div v-if="activeCategory !== null" class="subcategory-links">
-                               
+                            <div v-if="activeCategory" @mouseenter="keepSubCategoriesVisible" class="subcategory-links">
                                 <div class="subcat2">
-                                    <a v-for="(link, linkIndex) in categories[activeCategory].links" :key="linkIndex"
-                                        :href="link.href">
-                                        {{ link.text }}
-                                    </a>
+                                    <ul>
+                                        <li class="flex items-center  mb-2 text-xs cursor-pointer hover:text-green-900 p-2 rounded"
+                                            v-for="(subCategory) in activeCategory.subCategories" :key="subCategory.id"
+                                            @click="navigateToCategory(activeCategory.name, subCategory.name)">
+                                            {{ subCategory.name }}
+                                        </li>
+                                    </ul>
+
                                 </div>
                             </div>
                         </div>
@@ -45,12 +48,11 @@
         </div>
     </div>
 </template>
-
-
   
-  
+ 
 <script>
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { getCategories } from "@/service/categories.service";
 
 export default {
     name: "CatalogMenu",
@@ -61,72 +63,77 @@ export default {
     data() {
         return {
             isMenuOpen: false,
-            activeCategory: null, // Track the currently active category
-            categories: [
-                {
-                    name: "Kabellar",
-                    icon: require('@/assets/kabeli.svg'),
-                    links: [
-                        { text: "AVVG | AVVGng", href: "/kabellar/avvg" },
-                        { text: "SIP-2 | SIP-3 | SIP-4", href: "/kabellar/sip" },
-                        { text: "TPP | TPPep", href: "/kabellar/tpp" },
-                        { text: "AVVG | AVVGng", href: "/kabellar/avvg" },
-                        { text: "SIP-2 | SIP-3 | SIP-4", href: "/kabellar/sip" },
-                        { text: "TPP | TPPep", href: "/kabellar/tpp" },
-                        { text: "AVVG | AVVGng", href: "/kabellar/avvg" },
-                        { text: "SIP-2 | SIP-3 | SIP-4", href: "/kabellar/sip" },
-                        { text: "TPP | TPPep", href: "/kabellar/tpp" },
-                        { text: "AVVG | AVVGng", href: "/kabellar/avvg" },
-                        { text: "SIP-2 | SIP-3 | SIP-4", href: "/kabellar/sip" },
-                        { text: "TPP | TPPep", href: "/kabellar/tpp" },
-                    ],
-                },
-                {
-                    name: "Simlar",
-                    icon: require('@/assets/provoda.svg'),
-                    links: [
-                        { text: "PUNP", href: "/simlar/punp" },
-                        { text: "PUGNP", href: "/simlar/pugnp" },
-                    ],
-                },
-                {
-                    name: "Elektrotexnika",
-                    icon: require('@/assets/category-icon-8.svg'),
-                    links: [
-                        { text: "Lampalar", href: "/elektrotexnika/lampalar" },
-                        { text: "Yoritgichlar", href: "/elektrotexnika/yoritgichlar" },
-                    ],
-                },
-            ],
+            isSubCategoryHovered: false,
+            activeCategory: null, // Faol kategoriya
+            categories: [], // Serverdan yuklangan kategoriyalar
         };
     },
     methods: {
         toggleMenu() {
             this.isMenuOpen = !this.isMenuOpen;
             if (!this.isMenuOpen) {
-                this.activeCategory = null; // Reset the active category when the menu is closed
+                this.activeCategory = null; // Menyu yopilganda aktiv kategoriyani tiklash
             }
         },
-        setActiveCategory(index) {
-            this.activeCategory = index;
+        hoverCategory(category) {
+            this.activeCategory = category;
+            this.isSubCategoryHovered = true;
         },
+        keepSubCategoriesVisible() {
+            this.isSubCategoryHovered = true;
+        },
+        hideSubCategories() {
+            this.isSubCategoryHovered = false;
+            setTimeout(() => {
+                if (!this.isSubCategoryHovered) {
+                    this.activeCategory = null;
+                }
+            }, 200); // Delay hiding to allow smooth transition
+        },
+        navigateToCategory(categoryName, subCategoryName = null) {
+
+            // Navigate to DynamicProducts.vue with query params
+            this.$router.push({
+                name: "AllProducts", // Replace with your route name
+                query: {
+                    category: categoryName,
+                    subCategory: subCategoryName,
+                },
+            });
+            this.isMenuOpen = false;
+            this.activeCategory = null;
+        },
+        //   clearActiveCategory() {
+        //     this.activeCategory = null;
+        //   },
+        async fetchCategories() {
+            try {
+                this.categories = await getCategories();
+                // console.log(this.categories);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        },
+
+
+    },
+    async mounted() {
+        this.fetchCategories()
     },
 };
 </script>
-
+  
 <style scoped>
 .main {
     background-color: white;
 }
 
-/* Catalog Menu Container */
 .catalog-menu {
     position: relative;
     width: 100%;
     background-color: white;
 }
 
-/* Menu Header */
 .menu-header {
     cursor: pointer;
     display: flex;
@@ -153,7 +160,6 @@ export default {
     height: 24px;
 }
 
-/* Collapsing Menu Content */
 .menu-content-overlay {
     position: absolute;
     top: 100%;
@@ -193,54 +199,39 @@ export default {
     width: 17px;
 }
 
-/* Subcategory Links */
 .subcategory-links {
     flex: 2;
     padding-left: 20px;
     border-left: 1px solid #ddd;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap; /* Allow links to wrap to the next column */
+    flex-wrap: wrap;
     gap: 10px;
-    max-height: 300px; /* Set max height */
-    overflow-y: auto; /* Allow scrolling for overflow */
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .subcategory-links>div {
     display: flex;
-    flex-wrap: wrap; /* Allow links to wrap into multiple columns */
+    flex-wrap: wrap;
     flex-direction: row;
-    column-gap: 5px; /* Space between columns */
+    column-gap: 5px;
 }
 
 .subcategory-links a {
     font-size: 13px;
     color: black;
     text-decoration: none;
-    flex: 1 1 25%; /* Ensure 4 links per row */
+    flex: 1 1 25%;
     min-width: 150px;
     max-width: 200px;
     font-weight: 600;
 }
 
 .subcategory-links a:hover {
-    
     color: #086c08;
 }
 
-/* Scrollbar Customization (Optional) */
-.subcategory-links::-webkit-scrollbar {
-    width: 6px;
-}
-
-.subcategory-links::-webkit-scrollbar-thumb {
-    background: #ddd;
-    border-radius: 3px;
-}
-
-
-
-/* Smooth Collapsing Animation */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
     transition: all 0.3s ease;
@@ -266,16 +257,16 @@ export default {
     margin-left: auto;
     background-color: white;
 }
-
-@media (min-width: 13466px) {
-    .container {
-        max-width: 1366px;
-    }
+@media (min-width: 1246px) {
+  .container {
+    max-width: 1266px;
+  }
 }
 
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1200px;
-    }
+@media (min-width: 1248px) {
+  .container {
+    max-width: 1248px;
+  }
 }
 </style>
+

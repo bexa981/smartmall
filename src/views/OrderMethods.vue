@@ -20,9 +20,9 @@
                 mahsulotni tanlang.
                 <br>
                 <br>
-                
 
-              
+
+
                 Agar bir nechta mahsulot buyurtma bermoqchi bo'lsangiz, mahsulotni "Savatga qo'shish" tugmasi orqali savatga
                 qo'shing.
                 Qolgan kerakli mahsulotlarni ham xuddi shu tarzda savatga qo'shing.
@@ -41,19 +41,19 @@
                 Agar faqat bitta mahsulot sotib olishni xohlasangiz, "Hozir sotib olish" tugmasini bosing va
                 to'g'ridan-to'g'ri buyurtma rasmiylashtirish sahifasiga o'tasiz.
                 <br>
-                <br>
-                Agar qo'shimcha yordamga muhtoj bo'lsangiz, biz bilan quyidagi aloqa vositalari orqali bog'lanishingiz
-                mumkin:
-                <br>
+               
+            <br>
+            <br>
+            Sizga yoqimli xaridlar tilaymiz! 🙌
+            </p>
+            <p> Agar qo'shimcha yordamga muhtoj bo'lsangiz, biz bilan quyidagi aloqa vositalari orqali bog'lanishingiz
+                mumkin:</p>
+            
             <ul>
                 <li>Telefon orqali: +99878 120 09 09</li>
                 <li>Elektron pochta orqali: info@smartmall.uz</li>
                 <li>Telegramda: @smartmalluz</li>
             </ul>
-            <br>
-            <br>
-            Sizga yoqimli xaridlar tilaymiz! 🙌
-            </p>
         </div>
     </div>
 </template>
@@ -135,4 +135,5 @@ p {
     .container {
         max-width: 1200px;
     }
-}</style>
+}
+</style>
