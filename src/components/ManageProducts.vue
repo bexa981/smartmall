@@ -85,7 +85,7 @@
             required
           >
             <option value="" disabled>Select subcategory</option>
-            <option v-for="sub in subCategories" :key="sub.id" :value="sub.name">{{ sub.name }}</option>
+            <option v-for="sub in subCategories" :key="sub.id" :value="sub">{{ sub.name }}</option>
           </select>
         </div>
 
@@ -408,11 +408,13 @@ export default {
         const imageUrl = this.imageFile ? await uploadFile(this.imageFile) : "";
 
         const product = {
+          
           ...this.newProduct,
           image: imageUrl,
         };
 
         const productId = await addProduct(product);
+        console.log(productId);
         product.id = productId;
         this.products.unshift(product);
         this.resetForm();
