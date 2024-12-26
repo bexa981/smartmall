@@ -22,7 +22,7 @@
                         <tr v-for="(product, index) in cartProducts" :key="index">
                             <td class="nameImg">
                                 <img :src="product.image" alt="Product Image" class="product-image" />
-                                {{ product.description }}
+                                {{ product.name }}
                             </td>
                             <td class="price">{{ product.price }} UZS</td>
                             <td class="increments">
@@ -249,6 +249,7 @@ table {
 .nameImg {
     display: flex;
     padding: 5px;
+    align-items: center;
     gap: 15px;
     font-size: 14px;
     font-weight: 300;

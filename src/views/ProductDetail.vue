@@ -7,7 +7,7 @@
         <img :src="imageSrc" alt="Product Image" class="product-image" />
         <div class="card-main">
           <div class="card-content">
-            <h2 class="product-title">{{ description }}</h2>
+            <h2 class="product-title">{{ title }}</h2>
             <div class="likes">
               <p class="product-price"> {{ price }} UZS</p>
               <button @click="toggleLike" class="like-button">
@@ -357,8 +357,9 @@ export default {
 }
 
 .card-main h2 {
-  font-size: 14px;
-  padding: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 4px;
 }
 
 .card-main p {

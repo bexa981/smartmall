@@ -15,6 +15,9 @@
     <!-- Tabs Content -->
     <div class="tabs-content">
       <div v-if="activeTab !== null">
+        <div v-if="activeTab === 0">
+          <p>{{ description }}</p>
+        </div>
         <!-- Texnik xususiyatlari -->
         <div v-if="activeTab === 1">
           <table class="tech-specs-table">
@@ -63,12 +66,16 @@ export default {
       type: Object, // Texnik xususiyatlar obyektini qabul qilish
       required: true,
     },
+    description: {
+      type: String, // Tavsif matni uchun prop
+      required: true,
+    },
   },
   data() {
     return {
       activeTab: 0, // Default active tab
       tabs: [
-        { title: "Tavsif", content: "Bu mahsulot haqida tavsif." },
+        { title: "Tavsif", content: " " },
         { title: "Texnik xususiyatlari", content: "" }, // Content is replaced with a table
         { title: "Mahsulot haqida savollar (0)", content: "" }, // Content is replaced with input form
       ],
@@ -78,7 +85,12 @@ export default {
   },
   computed: {
     filteredTabs() {
-      return this.tabs;
+      return this.tabs.map((tab, index) => {
+        if (index === 2) {
+          tab.title = `Mahsulot haqida savollar (${this.questionCount})`;
+        }
+        return tab;
+      });
     },
   },
   methods: {
