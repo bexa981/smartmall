@@ -75,7 +75,7 @@
 
             <!-- Products Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                <div v-for="(product, index) in filteredProducts" :key="index"
+                <div v-for="(product, index) in filteredProducts" :key="index" @click="navigateToProductDetail(product)"
                     class="bg-white border border-gray-200 rounded-lg p-2 text-center shadow hover:shadow-lg transition-shadow">
                     <img :src="product.image" alt="Product Image" class="w-full h-32 object-cover mb-4 rounded" />
                     <h4 class="font-normal text-left text-xs text-gray-800">
@@ -155,6 +155,17 @@ export default {
             } catch (error) {
                 console.error("Error fetching categories:", error);
             }
+        },
+        navigateToProductDetail(product) {
+            this.$router.push({
+                name: "ProductDetail",
+                params: {
+                    id: product.id, // Har bir mahsulot uchun unikal `id`
+                },
+                query: {
+                    product: JSON.stringify(product), // Qo'shimcha ma'lumotlar
+                },
+            });
         },
         async fetchProducts() {
             try {
