@@ -1,123 +1,95 @@
-import { db as database } from "../firebaseConfig";
+import { db as database, storage } from "../firebaseConfig";
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
   getDocs,
-  query,
-  where,
-  limit,
-  startAfter,
   updateDoc,
 } from "firebase/firestore";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirebaseDocs } from "../utils";
 
 const categoriesCollection = collection(database, "categories");
-const productsCollection = collection(database, "products"); // Mahsulotlar kolleksiyasi
 
-// Kategoriyalarni olish
+// ✅ Get Categories with Images
 export async function getCategories() {
-  const categories = await getFirebaseDocs(categoriesCollection);
-  for (let category of categories) {
-    const subCategoriesCollection = collection(
-      database,
-      `categories/${category.id}/subCategories`
-    );
-    const subCategories = await getFirebaseDocs(subCategoriesCollection);
+  try {
+    const categories = await getFirebaseDocs(categoriesCollection);
+    for (let category of categories) {
+      const subCategoriesCollection = collection(database, `categories/${category.id}/subCategories`);
+      const subCategories = await getFirebaseDocs(subCategoriesCollection);
 
-    category.subCategories = subCategories.map((sub) => ({
-      id: sub.id,
-      name: sub.name, // Oddiy string sifatida ishlatiladi
-    }));
+      category.subCategories = subCategories.map((sub) => ({
+        id: sub.id,
+        name: sub.name,
+      }));
+    }
+    return categories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
   }
-  return categories;
 }
 
-// Subkategoriya mahsulotlarini olish (filtrlash va sahifalash)
-export async function getProductsBySubCategory(
-  subCategoryName,
-  pageSize = 6,
-  lastDoc = null
-) {
-  try {
-    let productQuery = query(
-      productsCollection,
-      where("subCategory.name", "==", subCategoryName),
-      limit(pageSize)
-    );
+// ✅ Add Category with Name & Image
+export async function addCategory(categoryName, categoryImage) {
+  if (!categoryName || !categoryImage) {
+    throw new Error("Category name and image are required.");
+  }
 
-    if (lastDoc) {
-      productQuery = query(productQuery, startAfter(lastDoc));
+  try {
+    // 🔹 Step 1: Upload Image to Firebase Storage
+    const imageRef = storageRef(storage, `categoryImages/${categoryImage.name}`);
+    await uploadBytes(imageRef, categoryImage);
+    const imageUrl = await getDownloadURL(imageRef);
+
+    // 🔹 Step 2: Save Category Name & Image URL to Firestore
+    const newCategory = await addDoc(categoriesCollection, {
+      name: categoryName,
+      image: imageUrl, // ✅ Store Image URL
+    });
+
+    console.log("✅ Category added successfully:", newCategory.id);
+    return newCategory;
+  } catch (error) {
+    console.error("🔥 Error adding category:", error);
+    throw error;
+  }
+}
+
+// ✅ Update Category (Name & Image)
+export async function updateCategory(categoryId, newCategoryName, newCategoryImage = null) {
+  try {
+    let updatedData = { name: newCategoryName };
+
+    if (newCategoryImage) {
+      // 🔹 Upload new image if provided
+      const imageRef = storageRef(storage, `categoryImages/${newCategoryImage.name}`);
+      await uploadBytes(imageRef, newCategoryImage);
+      const imageUrl = await getDownloadURL(imageRef);
+      updatedData.image = imageUrl;
     }
 
-    const snapshot = await getDocs(productQuery);
-    const products = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    // 🔹 Update category in Firestore
+    const categoryDocRef = doc(database, "categories", categoryId);
+    await updateDoc(categoryDocRef, updatedData);
 
-    // `lastDoc`ni keyingi sahifa uchun saqlab qo'yish
-    const newLastDoc = snapshot.docs[snapshot.docs.length - 1];
-    return { products, lastDoc: newLastDoc };
+    console.log("✅ Category updated successfully:", categoryId);
   } catch (error) {
-    console.error("Error fetching products by subcategory:", error);
+    console.error("🔥 Error updating category:", error);
     throw error;
   }
 }
 
-// Subkategoriya qo'shish
-export async function addSubCategory(categoryId, subCategoryName) {
-  const subCategoriesCollection = collection(
-    database,
-    `categories/${categoryId}/subCategories`
-  );
-  const result = await addDoc(subCategoriesCollection, {
-    name: subCategoryName, // Oddiy string sifatida saqlash
-  });
-  return result;
-}
-export async function getCategoriesWithSubCategories() {
+// ✅ Delete Category
+export async function deleteCategory(categoryId) {
   try {
-    const snapshot = await getDocs(categoriesCollection);
-    return snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        subCategories: (data.subCategories || []).map((sub) => ({
-          ...sub,
-          href: `/category/${doc.id}/subcategory/${sub.id}`, // Dinamik havola yaratish
-        })),
-      };
-    });
+    const categoryDocRef = doc(database, "categories", categoryId);
+    await deleteDoc(categoryDocRef);
+    console.log("✅ Category deleted:", categoryId);
   } catch (error) {
-    console.error("Kategoriyalarni olishda xatolik:", error);
-    throw error;
-  }
-}
-// Subkategoriya o'chirish
-export async function deleteSubCategory(categoryId, subCategoryId) {
-  const result = await deleteDoc(
-    doc(database, "categories", categoryId, "subCategories", subCategoryId)
-  );
-  return result;
-}
-export async function updateSubCategory(
-  categoryId,
-  subCategoryId,
-  updatedSubCategory
-) {
-  try {
-    const subCategoryDocRef = doc(
-      database,
-      `categories/${categoryId}/subCategories`,
-      subCategoryId
-    );
-    await updateDoc(subCategoryDocRef, updatedSubCategory);
-    console.log("Subkategoriya muvaffaqiyatli yangilandi:", updatedSubCategory);
-  } catch (error) {
-    console.error("Subkategoriya yangilashda xatolik:", error);
+    console.error("🔥 Error deleting category:", error);
     throw error;
   }
 }

@@ -63,17 +63,19 @@
   import ManageCategories from "@/components/ManageCategories.vue";
   import ManageProducts from "@/components/ManageProducts.vue";
   import HomePageMenu from "@/components/HomePageMenu.vue";
+  import ManageMainCat from "@/components/ManageMainCat.vue"
   
   export default {
     components: {
       ManageCategories,
       ManageProducts,
       HomePageMenu,
+      ManageMainCat,
     },
     data() {
       return {
         activeTab: "Manage Categories",
-        navItems: ["Manage Categories", "Manage Products", "Home Page Menu"],
+        navItems: ["Sub kategoriya qo'shish", "Mahsulot qo'shish", "Mahsulotlarni boshqarish","Kategoriya qo'shish"],
         languages: ["Uzbek", "Russian"],
         currentLanguage: "Uzbek",
         categories: [],
@@ -88,12 +90,14 @@
     computed: {
       currentComponent() {
         switch (this.activeTab) {
-          case "Manage Categories":
+          case "Sub kategoriya qo'shish":
             return "ManageCategories";
-          case "Manage Products":
+          case "Mahsulot qo'shish":
             return "ManageProducts";
-          case "Home Page Menu":
+          case "Mahsulotlarni boshqarish":
             return "HomePageMenu";
+            case "Kategoriya qo'shish":
+              return "ManageMainCat";
           default:
             return null;
         }
