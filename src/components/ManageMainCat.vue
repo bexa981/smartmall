@@ -41,9 +41,14 @@
             <img :src="category.image" alt="Category" class="w-12 h-12 rounded-full object-cover" />
             <span class="text-lg font-semibold">{{ category.id }}</span>
           </div>
+          <div class="flex space-x-2">
           <button @click="openEditModal(category)" class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">
             Edit
           </button>
+          <button @click="deleteCategory(category.id)" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">
+            Delete
+          </button>
+        </div>
         </li>
       </ul>
   
@@ -82,7 +87,7 @@
   <script>
   import { ref, onMounted } from "vue";
   import { db } from "@/firebaseConfig"; // ✅ Firestore import
-  import { collection, getDocs, setDoc, doc, updateDoc } from "firebase/firestore";
+  import { collection, getDocs, setDoc, doc, updateDoc,deleteDoc  } from "firebase/firestore";
   import { uploadFile } from '@/service/files.service'; // ✅ Use GitHub Upload
   
   export default {
@@ -176,6 +181,18 @@
           console.error("Error updating category:", error);
         }
       };
+
+      const deleteCategory = async (categoryId) => {
+      if (!confirm("Are you sure you want to delete this category?")) return;
+
+      try {
+        await deleteDoc(doc(db, "categories", categoryId));
+        categories.value = categories.value.filter((cat) => cat.id !== categoryId);
+        alert("Category deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting category:", error);
+      }
+    };
   
       // ✅ Close Edit Modal
       const closeEditModal = () => {
@@ -188,7 +205,7 @@
   
       return {
         categories, newCategoryId, newCategoryImage, imageError,
-        addCategory, handleImageUpload, openEditModal, saveCategory,
+        addCategory, handleImageUpload, openEditModal, saveCategory, deleteCategory,
         isEditModalOpen, editedCategory, editedCategoryImage, handleEditImageUpload, closeEditModal
       };
     }

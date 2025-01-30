@@ -4,7 +4,7 @@
         <h2 class="text-2xl font-bold mb-4">Edit Product</h2>
         <form @submit.prevent="save">
           <div class="mb-4">
-            <label class="block font-semibold mb-1">Product Name ({{ currentLanguage }})</label>
+            <label class="block font-semibold mb-1">Mahsulot nomi({{ currentLanguage }})</label>
             <input
               v-model="product.name[currentLanguage]"
               class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
@@ -12,9 +12,9 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block font-semibold mb-1">Price (UZS)</label>
+            <label class="block font-semibold mb-1">Narxi ($)</label>
             <input
-              type="number"
+              type="text"
               v-model="product.price"
               class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
               required

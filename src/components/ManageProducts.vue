@@ -110,7 +110,7 @@
         </div>
 
         <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 md:col-span-2">
-          Add Product
+          Mahsulot qo'shish
         </button>
       </form>
 
@@ -122,7 +122,7 @@
         <select v-model="filters.category"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
           @change="filterProducts">
-          <option value="">Categories</option>
+          <option value="">Kategoriyalar</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
@@ -141,14 +141,14 @@
       <table class="table-auto w-full border-collapse border border-gray-300 mt-8">
         <thead class="bg-gray-200">
           <tr>
-            <th class="border border-gray-300 p-2">Image</th>
-            <th class="border border-gray-300 p-2">Name</th>
-            <th class="border border-gray-300 p-2">Price</th>
-            <th class="border border-gray-300 p-2">Category</th>
-            <th class="border border-gray-300 p-2">Subcategory</th>
-            <th class="border border-gray-300 p-2">In Stock</th>
-            <th class="border border-gray-300 p-2">Technical Characteristics</th>
-            <th class="border border-gray-300 p-2">Actions</th>
+            <th class="border border-gray-300 p-2">Mahsulot rasmi</th>
+            <th class="border border-gray-300 p-2">Mahsulot nomi</th>
+            <th class="border border-gray-300 p-2">Mahsulot narxi</th>
+            <th class="border border-gray-300 p-2">Kategoriyasi</th>
+            <th class="border border-gray-300 p-2">Subcategoiyasi</th>
+            <th class="border border-gray-300 p-2">Sotuvda mavjudmi</th>
+            <th class="border border-gray-300 p-2">Texnik sifatlari</th>
+            <th class="border border-gray-300 p-2">Sozlamalar</th>
           </tr>
         </thead>
         <tbody>
@@ -157,7 +157,7 @@
               <img :src="product.image" alt="Product Image" class="w-16 h-16 object-cover rounded" />
             </td>
             <td class="border border-gray-300 p-2">{{ product.name }}</td>
-            <td class="border border-gray-300 p-2">{{ product.price }} UZS</td>
+            <td class="border border-gray-300 p-2">{{ product.price }} $</td>
             <td class="border border-gray-300 p-2">{{ product.categoryName }}</td>
             <td class="border border-gray-300 p-2">{{ product.subCategory }}</td>
             <td class="border border-gray-300 p-2">{{ product.inStock ? "Yes" : "No" }}</td>
@@ -173,11 +173,11 @@
             <td class="border border-gray-300 p-2">
               <button @click="openEditModal(product, index)"
                 class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">
-                Edit
+                O'zgartirish
               </button>
               <button @click="deleteProduct(index, product.id)"
                 class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">
-                Delete
+                O'chirish
               </button>
             </td>
           </tr>
@@ -187,10 +187,10 @@
       <!-- Pagination Controls -->
       <div class="mt-4 flex justify-between">
         <button @click="loadPreviousPage" :disabled="!hasPreviousPage" class="bg-gray-300 px-4 py-2 rounded">
-          Previous
+          Oldingi
         </button>
         <button @click="loadNextPage" :disabled="!hasMorePages" class="bg-gray-300 px-4 py-2 rounded">
-          Next
+          Keyingi
         </button>
       </div>
     </section>
@@ -339,7 +339,7 @@ export default {
       this.editedProduct.price = value ? parseFloat(value) : "";
 
       // Display formatted value with "$" symbol
-      this.formattedEditPrice = value ? `${value}$` : "";
+      this.formattedEditPrice = value ? `${value}` : "";
     },
 
 
