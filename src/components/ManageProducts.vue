@@ -7,20 +7,15 @@
 
     <!-- Manage Products Section -->
     <section v-else class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-semibold mb-4">Manage Products</h2>
+      <h2 class="text-2xl font-semibold mb-4">Mahsulot qo'shish</h2>
 
       <!-- Add Product Form -->
       <form @submit.prevent="addProduct" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <!-- File Input -->
         <div>
-          <label class="block font-semibold mb-1">Product Image</label>
-          <input
-            id="fileInput"
-            type="file"
-            accept="image/*"
-            @change="onFileChange"
-            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-          />
+          <label class="block font-semibold mb-1">Mahsulot rasmi</label>
+          <input id="fileInput" type="file" accept="image/*" @change="onFileChange"
+            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
           <div v-if="newProduct.image" class="mt-2">
             <img :src="newProduct.image" alt="Product Preview" class="w-24 h-24 object-cover rounded" />
           </div>
@@ -28,48 +23,34 @@
 
         <!-- Product Name -->
         <div>
-          <label class="block font-semibold mb-1">Product Name</label>
-          <input
-            type="text"
-            v-model="newProduct.name"
-            placeholder="Enter product name"
+          <label class="block font-semibold mb-1">Mahsulot nomi</label>
+          <input type="text" v-model="newProduct.name" placeholder="Enter product name"
             class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-            required
-          />
+            required />
         </div>
 
         <!-- Product Description -->
         <div class="md:col-span-2">
-          <label class="block font-semibold mb-1">Product Description</label>
-          <textarea
-            v-model="newProduct.description"
-            placeholder="Enter product description"
+          <label class="block font-semibold mb-1">Mahsulot tavsifi</label>
+          <textarea v-model="newProduct.description" placeholder="Enter product description"
             class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-            required
-          ></textarea>
+            required></textarea>
         </div>
 
         <!-- Product Price -->
         <div>
-          <label class="block font-semibold mb-1">Price (UZS)</label>
-          <input
-            type="number"
-            v-model="newProduct.price"
-            placeholder="Enter product price"
+          <label class="block font-semibold mb-1">Narxi ($)</label>
+          <input type="text" v-model="formattedPrice" @input="formatPrice" placeholder="0.00$"
             class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-            required
-          />
+            required />
         </div>
 
         <!-- Product Category -->
         <div>
-          <label class="block font-semibold mb-1">Category</label>
-          <select
-            v-model="newProduct.category"
-            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-            required
-          >
-            <option value="" disabled>Select category</option>
+          <label class="block font-semibold mb-1">Kategoriyasi</label>
+          <select v-model="newProduct.category"
+            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" required>
+            <option value="" disabled>Kategoriya tanlang</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
             </option>
@@ -78,78 +59,52 @@
 
         <!-- Product Subcategory -->
         <div>
-          <label class="block font-semibold mb-1">Subcategory</label>
-          <select
-            v-model="newProduct.subCategory"
-            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-            required
-          >
-            <option value="" disabled>Select subcategory</option>
+          <label class="block font-semibold mb-1">Sub kategoriyasi</label>
+          <select v-model="newProduct.subCategory"
+            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" required>
+            <option value="" disabled>Sub kategoriya tanlang</option>
             <option v-for="sub in subCategories" :key="sub.id" :value="sub">{{ sub.name }}</option>
           </select>
         </div>
 
         <!-- Product In Stock -->
         <div>
-          <label class="block font-semibold mb-1">In Stock</label>
-          <select
-            v-model="newProduct.inStock"
-            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-            required
-          >
-            <option :value="true">Yes</option>
-            <option :value="false">No</option>
+          <label class="block font-semibold mb-1">Sotuvda mavjudmi</label>
+          <select v-model="newProduct.inStock"
+            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" required>
+            <option :value="true">Ha mavjud</option>
+            <option :value="false">Zakazga</option>
           </select>
         </div>
 
         <!-- Technical Characteristics -->
         <div class="md:col-span-2">
-          <h3 class="text-xl font-bold mb-4">Technical Characteristics</h3>
+          <h3 class="text-xl font-bold mb-4">Texnik sifatlari</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block font-semibold mb-1">Kod</label>
-              <input
-                type="text"
-                v-model="newProduct.technical.kod"
-                placeholder="Enter Kod"
-                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              />
+              <input type="text" v-model="newProduct.technical.kod" placeholder="Enter Kod"
+                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Uzunligi</label>
-              <input
-                type="text"
-                v-model="newProduct.technical.uzunligi"
-                placeholder="Enter Uzunligi"
-                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              />
+              <input type="text" v-model="newProduct.technical.uzunligi" placeholder="Enter Uzunligi"
+                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Kengligi</label>
-              <input
-                type="text"
-                v-model="newProduct.technical.kengligi"
-                placeholder="Enter Kengligi"
-                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              />
+              <input type="text" v-model="newProduct.technical.kengligi" placeholder="Enter Kengligi"
+                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Balandligi</label>
-              <input
-                type="text"
-                v-model="newProduct.technical.balandligi"
-                placeholder="Enter Balandligi"
-                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              />
+              <input type="text" v-model="newProduct.technical.balandligi" placeholder="Enter Balandligi"
+                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Og‘irligi</label>
-              <input
-                type="text"
-                v-model="newProduct.technical.ogirligi"
-                placeholder="Enter Og‘irligi"
-                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              />
+              <input type="text" v-model="newProduct.technical.ogirligi" placeholder="Enter Og‘irligi"
+                class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500" />
             </div>
           </div>
         </div>
@@ -161,38 +116,26 @@
 
       <!-- Filter Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <input
-          type="text"
-          v-model="filters.name"
-          placeholder="Search by product name"
+        <input type="text" v-model="filters.name" placeholder="Search by product name"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-          @input="searchProducts"
-        />
-        <select
-          v-model="filters.category"
+          @input="searchProducts" />
+        <select v-model="filters.category"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-          @change="filterProducts"
-        >
+          @change="filterProducts">
           <option value="">Categories</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
         </select>
-        <select
-          v-model="filters.subCategory"
+        <select v-model="filters.subCategory"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-          @change="filterProducts"
-        >
+          @change="filterProducts">
           <option value="">Subcategories</option>
           <option v-for="sub in subCategories" :key="sub.id" :value="sub">{{ sub.name }}</option>
         </select>
-        <input
-          type="number"
-          v-model="filters.price"
-          placeholder="Filter by Max Price"
+        <input type="text" v-model="filters.price" placeholder="Filter by Max Price"
           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-          @input="filterProducts"
-        />
+          @input="filterProducts" />
       </div>
       <!-- Product Table -->
       <table class="table-auto w-full border-collapse border border-gray-300 mt-8">
@@ -228,10 +171,12 @@
               </ul>
             </td>
             <td class="border border-gray-300 p-2">
-              <button @click="openEditModal(product, index)" class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">
+              <button @click="openEditModal(product, index)"
+                class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">
                 Edit
               </button>
-              <button @click="deleteProduct(index, product.id)" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">
+              <button @click="deleteProduct(index, product.id)"
+                class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">
                 Delete
               </button>
             </td>
@@ -240,7 +185,7 @@
       </table>
 
       <!-- Pagination Controls -->
-     <div class="mt-4 flex justify-between">
+      <div class="mt-4 flex justify-between">
         <button @click="loadPreviousPage" :disabled="!hasPreviousPage" class="bg-gray-300 px-4 py-2 rounded">
           Previous
         </button>
@@ -253,32 +198,27 @@
     <!-- Edit Modal -->
     <div v-if="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h3 class="text-xl font-semibold mb-4">Edit Product</h3>
+        <h3 class="text-xl font-semibold mb-4">Mahsulot sozlamalari</h3>
         <form @submit.prevent="saveProduct">
           <div class="mb-4">
-            <label class="block font-semibold mb-1">Product Name</label>
-            <input
-              type="text"
-              v-model="editedProduct.name"
+            <label class="block font-semibold mb-1">Mahsulot nomi</label>
+            <input type="text" v-model="editedProduct.name"
               class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              required
-            />
+              required />
           </div>
           <div class="mb-4">
-            <label class="block font-semibold mb-1">Price (UZS)</label>
-            <input
-              type="number"
-              v-model="editedProduct.price"
+            <label class="block font-semibold mb-1">Narxi ($)</label>
+            <input type="text" v-model="formattedEditPrice" @input="formatEditPrice" placeholder="0.00$"
               class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-green-500"
-              required
-            />
+              required />
           </div>
           <div class="flex justify-end space-x-2">
-            <button type="button" @click="closeEditModal" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500">
-              Cancel
+            <button type="button" @click="closeEditModal"
+              class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500">
+              Bekor qilish
             </button>
             <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-              Save
+              Saqlash
             </button>
           </div>
         </form>
@@ -290,7 +230,7 @@
 
 <script>
 import { getCategories } from '@/service/categories.service';
-import { addProduct, deleteProduct, getPaginatedProducts,filterProductsByCriteria,searchProductsByName, updateProduct } from '@/service/products.service';
+import { addProduct, deleteProduct, getPaginatedProducts, filterProductsByCriteria, searchProductsByName, updateProduct } from '@/service/products.service';
 import { uploadFile } from '@/service/files.service';
 
 export default {
@@ -302,10 +242,12 @@ export default {
   },
   data() {
     return {
+      formattedEditPrice: "",
       categories: [], // Kategoriyalar
       subCategories: [], // Subkategoriyalarni tanlash uchun
       products: [], // Mahsulotlar ro'yxati
       imageFile: null,
+      formattedPrice: "",
       imagePreview: '',
       lastVisibleProduct: null, // Sahifalash uchun oxirgi mahsulot
       hasMorePages: true, // Keyingi sahifani yuklash mumkinmi
@@ -315,12 +257,13 @@ export default {
         image: "",
         name: "",
         description: "",
-        price: null,
+        price: "",
         category: "",
         subCategory: "",
         inStock: true,
         technical: { kod: "", uzunligi: "", kengligi: "", balandligi: "", ogirligi: "" },
       },
+
       filters: { name: "", subCategory: "", category: "", kod: "", price: "" }, // Filtrlar
       isEditModalOpen: false, // Tahrirlash oynasi holati
       editedProduct: null, // Tahrirlanayotgan mahsulot
@@ -347,6 +290,60 @@ export default {
     },
   },
   methods: {
+    formatPrice(event) {
+      let value = event.target.value.replace(/[^0-9.]/g, ""); // Remove invalid characters
+
+      // Ensure only one decimal point
+      if (value.split(".").length > 2) {
+        value = value.substring(0, value.lastIndexOf("."));
+      }
+
+      // Prevent leading "." (convert ".5" → "0.5")
+      if (value.startsWith(".")) {
+        value = "0" + value;
+      }
+
+      // Ensure proper decimal formatting (max 2 decimal places)
+      if (value.includes(".")) {
+        const [integer, decimal] = value.split(".");
+        value = integer + "." + (decimal.length > 2 ? decimal.slice(0, 2) : decimal);
+      }
+
+      // Update stored value (pure number)
+      this.newProduct.price = value ? parseFloat(value) : "";
+
+      // Display formatted value with "$" symbol
+      this.formattedPrice = value ? `${value}` : "";
+    },
+
+    formatEditPrice(event) {
+      let value = event.target.value.replace(/[^0-9.]/g, ""); // Remove invalid characters
+
+      // Ensure only one decimal point
+      if (value.split(".").length > 2) {
+        value = value.substring(0, value.lastIndexOf("."));
+      }
+
+      // Prevent leading "." (convert ".5" → "0.5")
+      if (value.startsWith(".")) {
+        value = "0" + value;
+      }
+
+      // Ensure max 2 decimal places
+      if (value.includes(".")) {
+        const [integer, decimal] = value.split(".");
+        value = integer + "." + (decimal.length > 2 ? decimal.slice(0, 2) : decimal);
+      }
+
+      // Store pure number in `editedProduct.price`
+      this.editedProduct.price = value ? parseFloat(value) : "";
+
+      // Display formatted value with "$" symbol
+      this.formattedEditPrice = value ? `${value}$` : "";
+    },
+
+
+
     async loadInitialPage() {
       try {
         this.loading = true;
@@ -404,11 +401,19 @@ export default {
     },
     async addProduct() {
       try {
+        if (!this.newProduct.price || isNaN(this.newProduct.price)) {
+          alert("Iltimos, mahsulot uchun to'g'ri narx kiriting!");
+          return;
+        }
+
+        console.log("✅ Mahsulot narxi:", this.newProduct.price, "$");
+
+
         this.loading = true;
         const imageUrl = this.imageFile ? await uploadFile(this.imageFile) : "";
 
         const product = {
-          
+
           ...this.newProduct,
           image: imageUrl,
         };
@@ -432,8 +437,9 @@ export default {
         const criteria = {
           category: this.filters.category,
           subCategory: this.filters.subCategory,
-          maxPrice: this.filters.price,
+          maxPrice: this.filters.price ? parseFloat(this.filters.price.replace("$", "")) : null, // 🔥 Ensure numeric value
         };
+
         const products = await filterProductsByCriteria(criteria);
         this.products = products;
       } catch (error) {
@@ -481,7 +487,7 @@ export default {
         image: "",
         name: "",
         description: "",
-        price: null,
+        price: "",
         category: "",
         subCategory: "",
         inStock: true,
@@ -489,6 +495,8 @@ export default {
       };
       this.imageFile = null;
       this.imagePreview = "";
+      this.formattedEditPrice = "";
+      this.formattedPrice = "";
     },
   },
   async mounted() {
