@@ -9,7 +9,7 @@
         <div v-for="(product, index) in groupedProducts[group.key]" :key="`group-${group.key}-${index}`"
           class="bg-white p-2 rounded border mb-2">
           <p><strong>{{ product.name }}</strong></p>
-          <p>{{ product.price }} UZS</p>
+          <p>{{ product.price }} $</p>
           <img :src="product.image" alt="Product Image" class="w-16 h-16 object-cover rounded" />
           <button @click="removeProductFromGroup(product.id, group.key)" class="text-red-500 hover:underline">
             O'chirish
@@ -41,7 +41,7 @@
             <td class="border border-gray-300 p-2">
               {{ product.name }}
             </td>
-            <td class="border border-gray-300 p-2">{{ product.price }} UZS</td>
+            <td class="border border-gray-300 p-2">{{ product.price }} $</td>
             <td class="border border-gray-300 p-2">
               <select v-model="product.selectedGroup" class="border p-2 rounded">
                 <option value="" disabled>Guruhni tanlang</option>

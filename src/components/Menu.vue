@@ -22,7 +22,7 @@
                                 <div class="category" v-for="(category, index) in categories" :key="index"
                                     @mouseenter="hoverCategory(category)">
                                     <div class="category-header">
-                                        <i class="w-8" :class="category.icon"></i>
+                                        <img v-if="category.image" :src="category.image" alt="category" class="w-8 h-8 object-contain mr-2" />
                                         <span>{{ category.id }}</span>
                                     </div>
                                 </div>
@@ -195,9 +195,7 @@ export default {
     font-weight: 400;
 }
 
-.category-header img {
-    width: 17px;
-}
+
 
 .subcategory-links {
     flex: 2;

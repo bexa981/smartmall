@@ -14,7 +14,7 @@
           <img :src="product.image" alt="Product Image" />
           <p class="prodName">{{ product.name }}</p>
           <div class="likesBtn">
-            <p class="prodPrice"> {{ product.price }} UZS</p>
+            <p class="prodPrice"> {{ product.price }} $</p>
             <button @click.stop.prevent="removeFromLikes(index)">
               <HeartIcon class="icon" />
             </button>

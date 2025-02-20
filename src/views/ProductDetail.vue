@@ -9,7 +9,7 @@
           <div class="card-content">
             <h2 class="product-title">{{ title }}</h2>
             <div class="likes">
-              <p class="product-price"> {{ price }} UZS</p>
+              <p class="product-price"> {{ price }} $</p>
               <button @click="toggleLike" class="like-button">
                 <i :class="liked ? 'fas fa-heart icons text-red-500' : 'far fa-heart icons text-gray-500'"></i>
                 Tanlanganlarga
@@ -53,16 +53,16 @@
           <div class="tavsiya">
             <div class="tavsiya-prod">
               <div></div>
-              <p>12 000 UZS</p>
+              <p>12 000 $</p>
             </div>
 
             <div class="tavsiya-prod">
               <div></div>
-              <p>12 000 UZS</p>
+              <p>12 000 $</p>
             </div>
             <div class="tavsiya-prod">
               <div></div>
-              <p>12 000 UZS</p>
+              <p>12 000 $</p>
             </div>
 
 

@@ -15,7 +15,7 @@
                     <p>{{ $t('mon') }}: 8.00-20.00</p>
 
                 </div>
-                <div class="currency-display">
+                <!-- <div class="currency-display">
                     <span style="color: #007bff;">{{ $t('kurs') }}:</span>
                     <div class="currency-item">
                         <span class="currency-icon">
@@ -31,20 +31,20 @@
                     </div>
 
 
-                </div>
+                </div> -->
                 <router-link class="contact" to="/yordam">{{ $t('contact') }}</router-link>
                 <div class="language-buttons">
                     <!-- Uzbek Button -->
                     <button :class="{ active: currentLanguage === 'uz' }" @click="changeLanguage('uz')"
                         class="language-button">
-                        <img src="https://flagcdn.com/w40/uz.png" alt="Uzbek Flag" class="flag-icon" />
+                        <img src="../assets/uz.png" alt="Uzbek Flag" class="flag-icon" />
                         <span>UZ</span>
                     </button>
 
                     <!-- Russian Button -->
                     <button :class="{ active: currentLanguage === 'ru' }" @click="changeLanguage('ru')"
                         class="language-button">
-                        <img src="https://flagcdn.com/w40/ru.png" alt="Russian Flag" class="flag-icon" />
+                        <img src="../assets/ru.png" alt="Russian Flag" class="flag-icon" />
                         <span>RU</span>
                     </button>
                 </div>
@@ -152,30 +152,35 @@
 }
 
 .header-top {
-  position: relative;
-  width: 100%;
-  background-color: #fcfbf7;
-  z-index: 10;
+    position: relative;
+    width: 100%;
+    background-color: #fcfbf7;
+    z-index: 10;
 }
+
 .nav {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .sticky-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 30;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 30;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 .nav-placeholder {
-  height: 0;
+    height: 0;
 }
+
 .nav-placeholder.sticky {
-  height: 70px; /* Adjust to match nav height */
+    height: 70px;
+    /* Adjust to match nav height */
 }
 
 .karzina-main {
@@ -580,10 +585,11 @@
         width: 100%;
     }
 }
+
 @media only screen and (max-width: 500px) {
-.currency-display2{
-    display: none;
-}
+    .currency-display2 {
+        display: none;
+    }
 }
 </style>
 <script>

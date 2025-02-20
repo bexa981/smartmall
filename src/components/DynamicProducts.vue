@@ -82,7 +82,7 @@
                         {{ product.name }}
                     </h4>
                     <p class="text-green-800 text-left font-semibold">{{ product.subCategory.name }}</p>
-                    <p class="text-green-800 text-left font-semibold">{{ product.price }} UZS</p>
+                    <p class="text-green-800 text-left font-semibold">{{ product.price }} $</p>
                 </div>
             </div>
         </section>

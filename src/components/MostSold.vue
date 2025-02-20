@@ -19,7 +19,7 @@
               {{ product.name}}
             </h3>
             <p class="text-green-600 font-semibold text-sm">
-              {{ product.price }} UZS
+              {{ product.price }} $
             </p>
           </div>
         </div>

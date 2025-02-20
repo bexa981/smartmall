@@ -18,7 +18,7 @@
             <h3 class="font-normal text-xs text-gray-800 mb-2">
               {{ product.name}}
             </h3>
-            <p class="text-green-600 font-semibold text-sm">{{ product.price }} UZS</p>
+            <p class="text-green-600 font-semibold text-sm">{{ product.price }} $</p>
           </div>
         </div>
       </div>

@@ -10,4 +10,8 @@
 }
 body {
   background: linear-gradient(90deg,rgb(234, 245, 238), rgb(247, 237, 230));
+  background-image: url(https://storage.kodeks.ru/ds.cloud/media/uploads/sites/72/a6d6/62d7/d826/b331/1643146628-94-phonoteka-org-p-besplatnie-foni-dlya-kommercheskogo-ispolz-96.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
 }

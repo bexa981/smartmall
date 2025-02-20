@@ -8,8 +8,8 @@
             </li>
 
             <li v-for="category in categories" :key="category.id">
-                <router-link :to="`/category/${category.id}`">
-                    <i :class="`${category.icon} images-cat`"></i>
+                <router-link class="flex justify-center" :to="`/category/${category.id}`">
+                    <img v-if="category.image" :src="category.image" alt="category" class=" object-contain w-8 h-8 " />
                 </router-link>
             </li>
         </ul>
@@ -55,12 +55,18 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
+    transition: .3s;
+}
+img{
     transition: .3s;
 }
 .category-media a:hover{
-    background-color: rgb(193, 191, 191);
+    transform: scale(1.1);
+}
+.category-media a img:hover{
+    transform: scale(1.1);
 }
 ul {
     list-style-type: none;

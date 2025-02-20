@@ -24,13 +24,13 @@
                                 <img :src="product.image" alt="Product Image" class="product-image" />
                                 {{ product.name }}
                             </td>
-                            <td class="price">{{ product.price }} UZS</td>
+                            <td class="price">{{ product.price }} $</td>
                             <td class="increments">
                                 <button @click="decrementQuantity(index)">-</button>
                                 <span>{{ product.quantity }}</span>
                                 <button @click="incrementQuantity(index)">+</button>
                             </td>
-                            <td class="allPrice">Jami: {{ product.price * product.quantity }} UZS</td>
+                            <td class="allPrice">Jami: {{ product.price * product.quantity }} $</td>
                             <td class="actions">
                                 <button class="removeBtn" @click="removeFromCart(index)">
                                     <TrashIcon class="trash" />
@@ -47,7 +47,7 @@
                 <div class="forBuy">
                     <h3>Buyurtmani rasmiylashtirish</h3>
                     <p class="items" v-if="cartProducts.length > 0">
-                        <span>Umumiy narxi:</span> <span>{{ totalCost }} UZS</span>
+                        <span>Umumiy narxi:</span> <span>{{ totalCost }} $</span>
                     </p>
 
                     <div class="form-group">

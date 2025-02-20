@@ -12,7 +12,7 @@
     />
     <div class="card-body p-4 text-center">
       <h3 class="card-title text-xs font-semibold text-white bg-green-700 rounded-full py-1 px-2 inline-block">
-        {{ price }} UZS
+        {{ price }} $
       </h3>
       <p class="card-text mt-2 text-xs font-semibold text-gray-800 leading-relaxed">
         {{ description }}
