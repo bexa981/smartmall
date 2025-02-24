@@ -48,26 +48,17 @@
             </a>
           </div>
         </div>
-        <div class="tavsiya2">
+        <div class="tavsiya2" v-if="relatedProducts.length">
           <h2>Sizga tavsiya qilamiz</h2>
-          <div class="tavsiya">
-            <div class="tavsiya-prod">
-              <div></div>
-              <p>12 000 $</p>
-            </div>
+          <div class="tavsiya cursor-pointer w-35 h-35">
+            <div @click="navigateToProductDetail(item)" v-for="item in relatedProducts" :key="item.id"
+              class="tavsiya-prod">
+              <img :src="item.image" alt="Mahsulot rasmi" />
+              <!-- <p>{{ item.name }}</p> -->
+              <p>{{ item.price }} $</p>
 
-            <div class="tavsiya-prod">
-              <div></div>
-              <p>12 000 $</p>
             </div>
-            <div class="tavsiya-prod">
-              <div></div>
-              <p>12 000 $</p>
-            </div>
-
-
           </div>
-
         </div>
       </div>
       <TabsVue :techSpecs="product?.technical || {}" :description="product?.description || {}" />
@@ -79,18 +70,22 @@
 <script>
 import Swal from "sweetalert2";
 import TabsVue from "@/components/Tabs.vue";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebaseConfig"; // ✅ Firebase konfiguratsiya fayli
+import { getProduct } from "../service/products.service"; // ✅ getProduct funksiyasini to‘g‘ri import qilish
 
 export default {
   name: "ProductDetail",
   components: {
     TabsVue,
   },
-  props: ["id"], // Receive `id` as a prop
+  props: ["id"], 
   data() {
     return {
       product: null,
       quantity: 1,
-      liked: false, // Initial state of the like button
+      relatedProducts: [],
+      liked: false,
     };
   },
   created() {
@@ -100,13 +95,24 @@ export default {
 
     if (productData) {
       this.product = productData;
+      this.fetchRelatedProducts();
     } else if (this.id) {
-      this.fetchProduct(this.id); // Fetch product details if `id` is available
+      this.fetchProduct(this.id);
     } else {
-      this.handleMissingData(); // Handle missing data
+      this.handleMissingData();
     }
 
-    this.checkIfLiked(); // Check the like state when the component is created
+    this.checkIfLiked();
+
+    // 🔥 Route ID o‘zgarganda mahsulotni qayta yuklash
+    this.$watch(
+      () => this.$route.params.id,
+      async (newId) => {
+        if (newId) {
+          await this.fetchProduct(newId);
+        }
+      }
+    );
   },
   computed: {
     imageSrc() {
@@ -128,10 +134,9 @@ export default {
   methods: {
     async fetchProduct(id) {
       try {
-        // Mahsulotni Firestore'dan olish
-        const fetchedProduct = await getProduct(id);
+        const fetchedProduct = await getProduct(id); // ✅ Firestore-dan mahsulot olish
         if (fetchedProduct) {
-          this.product = fetchedProduct; // Mahsulotni saqlash
+          this.product = fetchedProduct;
         } else {
           this.handleMissingData();
         }
@@ -140,33 +145,54 @@ export default {
         this.handleMissingData();
       }
     },
+
+    async fetchRelatedProducts() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "products")); 
+        const allProducts = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        if (!this.product || !this.product.price) return;
+
+        const productPrice = parseFloat(this.product.price); 
+
+        const filteredProducts = allProducts
+          .filter((item) => item.id !== this.product.id) 
+          .map((item) => ({
+            ...item,
+            priceDifference: Math.abs(parseFloat(item.price) - productPrice) 
+          }))
+          .sort((a, b) => a.priceDifference - b.priceDifference) 
+          .slice(0, 3); 
+
+        this.relatedProducts = filteredProducts;
+      } catch (error) {
+        console.error("Tavsiya etilgan mahsulotlarni olishda xatolik:", error);
+      }
+    },
+
     handleMissingData() {
-      // Redirect to a fallback page or show an error message
       Swal.fire({
         icon: "error",
         title: "Mahsulot topilmadi",
         text: "Iltimos, qayta urinib ko'ring yoki boshqa mahsulotni tanlang.",
         confirmButtonText: "OK",
       }).then(() => {
-        this.$router.push({ name: "Home" }); // Replace "Home" with your fallback route name
+        this.$router.push({ name: "AllProducts" }); 
       });
     },
-    incrementQuantity() {
-      this.quantity += 1;
+
+    navigateToProductDetail(product) {
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          id: product.id, 
+        },
+        query: {
+          product: JSON.stringify(product), 
+        },
+      });
     },
-    decrementQuantity() {
-      if (this.quantity > 0) {
-        this.quantity -= 1;
-      }
-    },
-    toggleLike() {
-      if (this.liked) {
-        this.removeFromLikes();
-      } else {
-        this.addToLikes();
-      }
-      this.liked = !this.liked; // Toggle the like state
-    },
+
     checkIfLiked() {
       try {
         const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
@@ -175,10 +201,11 @@ export default {
         console.error("Failed to check liked products:", error);
       }
     },
+
     addToLikes() {
       try {
         const product = {
-          id: this.id, // Ensure each product has a unique ID
+          id: this.id,
           image: this.imageSrc,
           description: this.description,
           name: this.title,
@@ -198,6 +225,7 @@ export default {
         console.error("Failed to add to likes:", error);
       }
     },
+
     removeFromLikes() {
       try {
         const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
@@ -214,40 +242,9 @@ export default {
         console.error("Failed to remove from likes:", error);
       }
     },
-    addToCart() {
-      try {
-        const product = {
-          id: this.id, // Ensure each product has a unique ID
-          image: this.imageSrc,
-          name: this.title,
-          description: this.description,
-          price: this.price,
-          quantity: this.quantity,
-        };
-        const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
-        const existingProductIndex = cartProducts.findIndex((p) => p.id === product.id);
-
-        if (existingProductIndex !== -1) {
-          cartProducts[existingProductIndex].quantity += this.quantity;
-        } else {
-          cartProducts.push(product);
-        }
-
-        localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-        window.dispatchEvent(new Event("cart-updated"));
-
-        Swal.fire({
-          icon: "success",
-          title: "Mahsulot savatga qo'shildi!",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } catch (error) {
-        console.error("Failed to add to cart:", error);
-      }
-    },
   },
 };
+
 </script>
 
 
@@ -366,7 +363,7 @@ export default {
   padding: 5px;
 }
 
-.card img {
+.card .product-image {
   width: 40%;
   height: 40%;
 }

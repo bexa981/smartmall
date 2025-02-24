@@ -6,13 +6,14 @@ import {
   limit,
   collection,
   getDocs,
+  getDoc,
   doc,
   setDoc,
   addDoc,
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db as database } from "../firebaseConfig";
+import { db as database } from "@/firebaseConfig"; 
 
 // Firebase'dagi "products" kolleksiyasini aniqlash
 const productsCollection = collection(database, "products");
@@ -42,7 +43,21 @@ export async function searchProductsByName(name) {
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
+export async function getProduct(id) {
+  try {
+    const productRef = doc(database, "products", id);
+    const productSnap = await getDoc(productRef);
 
+    if (productSnap.exists()) {
+      return { id: productSnap.id, ...productSnap.data() };
+    } else {
+      throw new Error("Mahsulot topilmadi");
+    }
+  } catch (error) {
+    console.error("Mahsulotni olishda xatolik:", error);
+    throw error;
+  }
+}
 export async function filterProductsByCriteria({ category, subCategory, maxPrice }) {
   let filters = [];
   if (category) filters.push(where("category", "==", category));

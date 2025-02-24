@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+// import HomeView from "../views/HomeView.vue";
 import Yordam from "../views/Yordam.vue";
 import ProductDetail from "@/views/ProductDetail.vue";
 import CategoryPage from "../views/CategoryPage.vue";
@@ -21,9 +21,9 @@ const routes = [
     path: "/",
     component: DefaultLayout,
     children: [
-      { path: "", component: HomeView, name: "HomeView" },
+      { path: "", component: AllProducts, name: "AllProducts" },
+      // { path: "HomeView", component: HomeView, name: "HomeView" },
       { path: "yordam", component: Yordam, name: "Yordam" },
-      { path: "allproducts", component: AllProducts, name: "AllProducts" },
       { path: "cart", component: CartPage, name: "CartPage" },
       { path: "likes", component: LikesPage, name: "LikesPage" },
       {
