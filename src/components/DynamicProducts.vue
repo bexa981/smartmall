@@ -95,6 +95,10 @@ import { getProducts } from "../service/products.service";
 
 export default {
     name: "DynamicProducts",
+    props:{
+        selectedCategory: String, // ✅ Kategoriya bo‘yicha filtr
+        searchQuery: String, // ✅ Qidiruv natijalari uchun
+    },
     data() {
         return {
             categories: [], // List of categories
@@ -109,6 +113,18 @@ export default {
         filteredProducts() {
             let filtered = this.products;
 
+            if (this.selectedCategory) {
+                filtered = filtered.filter((product) =>
+                    product.subCategory?.name?.toLowerCase() === this.selectedCategory.toLowerCase()
+                );
+            }
+
+            // 🔥 Qidiruv natijalari bo‘yicha filtrlash
+            if (this.searchQuery) {
+                filtered = filtered.filter((product) =>
+                    product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                );
+            }
             // Tanlangan subkategoriya bo'yicha filtrlash
             if (this.activeSubCategory) {
                 filtered = filtered.filter((product) => {
@@ -187,7 +203,7 @@ export default {
         setActiveSubCategory(categoryId, subCategoryName) {
             this.activeSubCategory = subCategoryName; // Tanlangan subkategoriya nomini saqlash
             this.$router.push({
-                query: { subCategory: subCategoryName }, // URL query parametrlarini yangilash
+                query: {...this.$route.query, subCategory: subCategoryName }, // URL query parametrlarini yangilash
             });
         },
         loadFromQuery() {
@@ -220,6 +236,12 @@ export default {
         this.loadFromQuery();
     },
     watch: {
+        selectedCategory() {
+            this.fetchProducts(); // ✅ Kategoriya o‘zgarsa mahsulotlarni yangilash
+        },
+        searchQuery() {
+            this.fetchProducts(); // ✅ Qidiruv o‘zgarsa mahsulotlarni yangilash
+        },
         $route: "loadFromQuery",
     },
 };

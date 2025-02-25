@@ -30,15 +30,16 @@
 import { HeartIcon } from "@heroicons/vue/24/solid";
 
 export default {
+  name: "LikesPage",
+  components: {
+    HeartIcon,
+  },
   data() {
     return {
       likedProducts: [],
     };
   },
-  components: {
-    HeartIcon,
-  },
-  created() {
+  mounted() {
     this.loadLikedProducts();
   },
   methods: {
@@ -46,8 +47,14 @@ export default {
       this.likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
     },
     removeFromLikes(index) {
+      // 🔥 Mahsulotni `localStorage` dan ID bo‘yicha o‘chirish
+      const productId = this.likedProducts[index]?.id;
       this.likedProducts.splice(index, 1);
+      this.likedProducts = [...this.likedProducts]; // ✅ Vue reaktivligini saqlash
       localStorage.setItem("likedProducts", JSON.stringify(this.likedProducts));
+
+      // 🔥 Header.vue yangilanishi uchun event yuborish
+      window.dispatchEvent(new Event("likes-updated"));
     },
   },
 };

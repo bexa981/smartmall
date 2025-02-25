@@ -1,9 +1,8 @@
 <template>
-
     <div class="main">
         <div class="container">
 
-            <DynamicProducts />
+            <DynamicProducts :selectedCategory="$route.query.subCategory" :searchQuery="$route.query.search" />
         </div>
     </div>
 </template>
@@ -22,10 +21,10 @@ export default {
 
 
   
-  <style scoped>
+<style scoped>
 .container {
     width: 100%;
-    
+
     margin-right: auto;
     margin-left: auto;
     background-color: white;

@@ -29,6 +29,10 @@
               <span>{{ quantity }}</span>
               <button @click="incrementQuantity">+</button>
             </div>
+            <br>
+            <div class="description">
+              <p>{{ product.description }}</p>
+            </div>
 
           </div>
           <!-- Actions -->
@@ -53,7 +57,7 @@
           <div class="tavsiya cursor-pointer w-35 h-35">
             <div @click="navigateToProductDetail(item)" v-for="item in relatedProducts" :key="item.id"
               class="tavsiya-prod">
-              <img :src="item.image" alt="Mahsulot rasmi" />
+              <img class="images" :src="item.image" alt="Mahsulot rasmi" />
               <!-- <p>{{ item.name }}</p> -->
               <p>{{ item.price }} $</p>
 
@@ -61,7 +65,7 @@
           </div>
         </div>
       </div>
-      <TabsVue :techSpecs="product?.technical || {}" :description="product?.description || {}" />
+      <!-- <TabsVue :techSpecs="product?.technical || {}" :description="product?.description || {}" /> -->
 
     </div>
   </div>
@@ -79,7 +83,7 @@ export default {
   components: {
     TabsVue,
   },
-  props: ["id"], 
+  props: ["id"],
   data() {
     return {
       product: null,
@@ -148,21 +152,21 @@ export default {
 
     async fetchRelatedProducts() {
       try {
-        const querySnapshot = await getDocs(collection(db, "products")); 
+        const querySnapshot = await getDocs(collection(db, "products"));
         const allProducts = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
         if (!this.product || !this.product.price) return;
 
-        const productPrice = parseFloat(this.product.price); 
+        const productPrice = parseFloat(this.product.price);
 
         const filteredProducts = allProducts
-          .filter((item) => item.id !== this.product.id) 
+          .filter((item) => item.id !== this.product.id)
           .map((item) => ({
             ...item,
-            priceDifference: Math.abs(parseFloat(item.price) - productPrice) 
+            priceDifference: Math.abs(parseFloat(item.price) - productPrice)
           }))
-          .sort((a, b) => a.priceDifference - b.priceDifference) 
-          .slice(0, 3); 
+          .sort((a, b) => a.priceDifference - b.priceDifference)
+          .slice(0, 3);
 
         this.relatedProducts = filteredProducts;
       } catch (error) {
@@ -177,18 +181,33 @@ export default {
         text: "Iltimos, qayta urinib ko'ring yoki boshqa mahsulotni tanlang.",
         confirmButtonText: "OK",
       }).then(() => {
-        this.$router.push({ name: "AllProducts" }); 
+        this.$router.push({ name: "AllProducts" });
       });
     },
-
+    incrementQuantity() {
+      this.quantity += 1;
+    },
+    decrementQuantity() {
+      if (this.quantity > 0) {
+        this.quantity -= 1;
+      }
+    },
+    toggleLike() {
+      if (this.liked) {
+        this.removeFromLikes();
+      } else {
+        this.addToLikes();
+      }
+      this.liked = !this.liked; // Toggle the like state
+    },
     navigateToProductDetail(product) {
       this.$router.push({
         name: "ProductDetail",
         params: {
-          id: product.id, 
+          id: product.id,
         },
         query: {
-          product: JSON.stringify(product), 
+          product: JSON.stringify(product),
         },
       });
     },
@@ -214,7 +233,7 @@ export default {
         const likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
         likedProducts.push(product);
         localStorage.setItem("likedProducts", JSON.stringify(likedProducts));
-
+        window.dispatchEvent(new Event("likes-updated"));
         Swal.fire({
           icon: "success",
           title: "Mahsulot tanlanganlarga qo'shildi!",
@@ -240,6 +259,38 @@ export default {
         });
       } catch (error) {
         console.error("Failed to remove from likes:", error);
+      }
+    },
+    addToCart() {
+      try {
+        const product = {
+          id: this.id, // Ensure each product has a unique ID
+          image: this.imageSrc,
+          name: this.title,
+          description: this.description,
+          price: this.price,
+          quantity: this.quantity,
+        };
+        const cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+        const existingProductIndex = cartProducts.findIndex((p) => p.id === product.id);
+
+        if (existingProductIndex !== -1) {
+          cartProducts[existingProductIndex].quantity += this.quantity;
+        } else {
+          cartProducts.push(product);
+        }
+
+        localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+        window.dispatchEvent(new Event("cart-updated"));
+
+        Swal.fire({
+          icon: "success",
+          title: "Mahsulot savatga qo'shildi!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Failed to add to cart:", error);
       }
     },
   },
@@ -281,6 +332,11 @@ export default {
   font-size: 18px;
   margin-right: 8px;
   transition: color 0.3s ease;
+}
+
+.images {
+  width: 250px !important;
+  height: auto;
 }
 
 .like-button {

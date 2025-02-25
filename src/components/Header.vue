@@ -79,26 +79,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="search-bar">
-                    <div class="search-container">
-                        <!-- Search Input -->
-                        <input type="text" :placeholder="$t('search')" class="search-input" v-model="searchQuery" />
-
-                        <!-- Dropdown Menu -->
-                        <select class="search-dropdown" v-model="selectedCategory">
-                            <option value="all">{{ $t('category') }}</option>
-                            <option value="cables">Kabellar</option>
-                            <option value="awg">— AWG | AWGng</option>
-                            <option value="electro">Elektrotexnika</option>
-                        </select>
-
-                        <!-- Search Button -->
-                        <button class="search-button" @click="performSearch">
-                            <MagnifyingGlassIcon class="search-icon" />
-                        </button>
-
-                    </div>
-                </div>
+                <SearchVue />
 
                 <div class="karzina-main">
                     <router-link to="/cart" class="karzina">
@@ -118,26 +99,8 @@
                     </router-link>
                 </div>
                 <!-- Cart -->
-                <div class="currency-display currency-display2">
-                    <span style="color: #007bff;">{{ $t('kurs') }}:</span>
-                    <div class="currency-item">
-                        <span class="currency-icon">
-                            <CurrencyDollarIcon />
-                        </span>
-                        <span>{{ dollarRate }} {{ $t('sum') }}</span>
-                    </div>
-                    <div class="currency-item">
-                        <span class="currency-icon">
-                            <CurrencyEuroIcon />
-                        </span>
-                        <span>{{ euroRate }} {{ $t('sum') }}</span>
-                    </div>
-
-
-                </div>
+               
             </div>
-
-
         </div>
         <!-- Placeholder -->
         <div ref="navPlaceholder"></div>
@@ -354,60 +317,6 @@
     align-items: center;
 }
 
-/* search bar */
-.search-bar {
-    background-color: white;
-    font-size: 12px;
-    order: 2;
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-}
-
-.search-input {
-    flex: 4;
-    width: 500px;
-    padding: 10px 15px;
-    font-size: 13px;
-    border: 1px solid #086c08;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.search-dropdown {
-    flex: 1;
-    padding: 9.5px;
-
-    border: 1px solid #086c08;
-    background-color: #ffffff;
-    color: #333;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.search-button {
-    padding: 6px 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    background-color: #086c08;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.search-button:hover {
-    background-color: #086c08;
-}
-
-.search-info {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #666;
-}
 
 .karzina {
     display: flex;
@@ -592,16 +501,12 @@
     }
 }
 </style>
-<script>
-import axios from "axios";
-import { PhoneIcon } from "@heroicons/vue/24/outline";
-import { AtSymbolIcon } from "@heroicons/vue/24/solid";
-import { ClockIcon } from "@heroicons/vue/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
-import { ShoppingCartIcon } from "@heroicons/vue/24/outline";
-import { HeartIcon } from "@heroicons/vue/24/outline";
-import { CurrencyDollarIcon } from "@heroicons/vue/24/outline";
-import { CurrencyEuroIcon } from "@heroicons/vue/24/outline";
+<script >
+import SearchVue from "../components/Search.vue";
+import { 
+    PhoneIcon, AtSymbolIcon, ClockIcon, ShoppingCartIcon, 
+    HeartIcon
+} from "@heroicons/vue/24/outline";
 
 export default {
     name: "Header",
@@ -609,52 +514,47 @@ export default {
         PhoneIcon,
         AtSymbolIcon,
         ClockIcon,
-        MagnifyingGlassIcon,
+        SearchVue,
         ShoppingCartIcon,
         HeartIcon,
-        CurrencyDollarIcon,
-        CurrencyEuroIcon,
     },
     data() {
         return {
-            currentLanguage: "uz", // Default language
+            currentLanguage: "uz",
             isSticky: false,
-            searchQuery: "", // User's search query
-            selectedCategory: "all", // Default category
-            likedProducts: JSON.parse(localStorage.getItem("likedProducts")) || [],
-            dollarRate: "Loading...", // Default message for Dollar rate
-            euroRate: "Loading...", // Default message for Euro rate
+            searchQuery: "",
+            selectedCategory: "all",
             cartProducts: JSON.parse(localStorage.getItem("cartProducts")) || [],
-            apiUrl: "https://open.er-api.com/v6/latest/UZS", // Replace with a valid API
+            likedProducts: JSON.parse(localStorage.getItem("likedProducts")) || [],
         };
     },
     computed: {
-        // Compute total quantity in the cart
         cartQuantity() {
             return this.cartProducts.reduce(
-                (total, product) => total + (product.quantity || 1),
-                0
+                (total, product) => total + (product.quantity || 1), 0
             );
         },
-        // Compute total likes quantity
         likesQuantity() {
             return this.likedProducts.length;
         },
     },
     mounted() {
-        this.fetchExchangeRates();
+        this.updateCartProducts();
+        this.updateLikedProducts();
+
+        // 🔥 Eventlarni eshitish (headerni avtomatik yangilash uchun)
+        window.addEventListener("cart-updated", this.updateCartProducts);
+        window.addEventListener("likes-updated", this.updateLikedProducts);
+
+        // 🔥 Sticky navbar
         this.$nextTick(() => {
             if (this.$refs.headerTop && this.$refs.nav) {
                 window.addEventListener("scroll", this.handleScroll);
             }
         });
-
-        // Listen for updates to cart and likes in localStorage
-        window.addEventListener("cart-updated", this.updateCartProducts);
-        window.addEventListener("likes-updated", this.updateLikedProducts);
     },
-    beforeDestroy() {
-        // Remove event listeners on component destroy
+    beforeUnmount() {
+        // 🔥 Eventlarni tozalash (Memory leak oldini olish)
         window.removeEventListener("scroll", this.handleScroll);
         window.removeEventListener("cart-updated", this.updateCartProducts);
         window.removeEventListener("likes-updated", this.updateLikedProducts);
@@ -680,7 +580,6 @@ export default {
                 navPlaceholder.style.height = "0";
             }
         },
-
         updateCartProducts() {
             this.cartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
         },
@@ -688,42 +587,19 @@ export default {
             this.likedProducts = JSON.parse(localStorage.getItem("likedProducts")) || [];
         },
         performSearch() {
-            console.log(
-                "Searching for:",
-                this.searchQuery,
-                "in category:",
-                this.selectedCategory
-            );
-        },
-        changeLanguage(language) {
-            this.currentLanguage = language; // Update the current language
-            this.$i18n.locale = language; // Update the i18n locale
-        },
-        async fetchExchangeRates() {
-            try {
-                const response = await axios.get(this.apiUrl);
-                console.log("API Response:", response.data); // Log the entire response
-                const rates = response.data.rates; // Check if 'rates' contains USD and EUR
-
-                // Calculate exchange rates if rates exist
-                if (rates && rates.USD && rates.EUR) {
-                    this.dollarRate = (1 / rates.USD).toLocaleString("uz-UZ", {
-                        minimumFractionDigits: 2,
-                    });
-                    this.euroRate = (1 / rates.EUR).toLocaleString("uz-UZ", {
-                        minimumFractionDigits: 2,
-                    });
-                } else {
-                    console.error("Rates for USD or EUR not found in API response.");
-                    this.dollarRate = "Error";
-                    this.euroRate = "Error";
-                }
-            } catch (error) {
-                console.error("Failed to fetch exchange rates:", error);
-                this.dollarRate = "Error";
-                this.euroRate = "Error";
+            if (this.searchQuery.trim() === "") {
+                this.$router.push({ name: "AllProducts", query: {} });
+            } else {
+                this.$router.push({
+                    name: "AllProducts",
+                    query: { search: this.searchQuery }
+                });
             }
         },
+        changeLanguage(language) {
+            this.currentLanguage = language;
+            this.$i18n.locale = language;
+        }
     },
 };
 </script>

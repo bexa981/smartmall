@@ -67,8 +67,14 @@
   
 <script>
 import { TrashIcon } from "@heroicons/vue/24/outline";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 export default {
+    name: "CartPage",
+    components: {
+        TrashIcon,
+    },
     data() {
         return {
             cartProducts: JSON.parse(localStorage.getItem("cartProducts")) || [],
@@ -78,16 +84,18 @@ export default {
             },
         };
     },
-    components: {
-        TrashIcon,
-    },
     computed: {
         totalCost() {
             return this.cartProducts.reduce(
-                (total, product) => total + product.price * product.quantity,
-                0
+                (total, product) => total + (product.price * (product.quantity || 1)), 0
             );
         },
+    },
+    mounted() {
+        window.addEventListener("cart-updated", this.updateCart);
+    },
+    beforeUnmount() {
+        window.removeEventListener("cart-updated", this.updateCart);
     },
     methods: {
         updateCart() {
@@ -95,35 +103,81 @@ export default {
         },
         incrementQuantity(index) {
             this.cartProducts[index].quantity += 1;
-            localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
-            this.updateCart();
+            this.syncCart();
         },
         decrementQuantity(index) {
             if (this.cartProducts[index].quantity > 1) {
                 this.cartProducts[index].quantity -= 1;
-                localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
-                this.updateCart();
+                this.syncCart();
             }
         },
         removeFromCart(index) {
             this.cartProducts.splice(index, 1);
-            localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
-            this.updateCart();
+            this.cartProducts = [...this.cartProducts];
+            this.syncCart();
         },
-        updateLocalStorage() {
+        syncCart() {
             localStorage.setItem("cartProducts", JSON.stringify(this.cartProducts));
+            window.dispatchEvent(new Event("cart-updated"));
         },
-        placeOrder() {
-            if (!this.order.name || !this.order.phone) {
-                alert("Iltimos, barcha maydonlarni to‘ldiring!");
+        async placeOrder() {
+            if (!this.order.name.trim() || !this.order.phone.trim()) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Xatolik!",
+                    text: "Iltimos, barcha maydonlarni to‘ldiring!",
+                });
                 return;
             }
-            alert(`Buyurtma qabul qilindi! ${this.order.name}, ${this.order.phone}`);
-            // Reset the form and cart
-            this.cartProducts = [];
-            this.order.name = "";
-            this.order.phone = "";
-            this.updateLocalStorage();
+
+            const userId = Math.floor(Math.random() * 1000000);
+
+            let orderText = `🛒 *Yangi Buyurtma!* \n`;
+            orderText += `🆔 *User ID:* ${userId} \n`;
+            orderText += `👤 *FIO:* ${this.order.name} \n`;
+            orderText += `📞 *Telefon:* ${this.order.phone} \n`;
+            orderText += `💰 *Umumiy narx:* ${this.totalCost} $ \n\n`;
+
+            this.cartProducts.forEach((product, index) => {
+                orderText += `📌 *Mahsulot ${index + 1}:* \n`;
+                orderText += `📷 *Rasm:* [Tovarga qarash](${product.image})\n`;
+                orderText += `🔹 *Nomi:* ${product.name} \n`;
+                orderText += `💵 *Narxi:* ${product.price} $ \n`;
+                orderText += `📦 *Soni:* ${product.quantity} \n\n`;
+            });
+
+            orderText += `🌍 *Web sayt orqali buyurtma berildi!*`;
+
+            const botToken = "7545687507:AAG_TGgNnbRQ9S19EPBdSuIpQ59ZWJ5uLfg"; 
+            const chatId = "-4796888041"; 
+            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            try {
+                await axios.post(telegramUrl, {
+                    chat_id: chatId,
+                    text: orderText,
+                    parse_mode: "Markdown",
+                });
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Buyurtma qabul qilindi!",
+                    text: `Hurmatli ${this.order.name}, biz siz bilan bog‘lanamiz!`,
+                });
+
+                this.cartProducts = [];
+                this.order.name = "";
+                this.order.phone = "";
+                this.syncCart();
+
+            } catch (error) {
+                console.error("Telegram xabar yuborishda xatolik:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Xatolik!",
+                    text: "Buyurtmani jo‘natishda muammo yuzaga keldi!",
+                });
+            }
         },
     },
 };
