@@ -4,7 +4,7 @@
         <div class="header-top header" ref="headerTop">
             <div class="left-header">
                 <a style="align-items: center; display: flex; gap: 10px;" href="tel:+998900757151">
-                    <PhoneIcon class="phoneicon" /> +99890 075 71 51
+                    <PhoneIcon class="phoneicon" /> +99897 810 04 04
                 </a>
                 <a style="align-items: center; display: flex; gap: 10px;" href="">
                     <AtSymbolIcon class="emailIcon" /> info@smartmall.uz
