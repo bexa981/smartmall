@@ -3,11 +3,11 @@
         <!-- Top Header -->
         <div class="header-top header" ref="headerTop">
             <div class="left-header">
-                <a style="align-items: center; display: flex; gap: 10px;" href="tel:+998900757151">
+                <a style="align-items: center; display: flex; gap: 10px;" href="tel:+998978100404">
                     <PhoneIcon class="phoneicon" /> +99897 810 04 04
                 </a>
-                <a style="align-items: center; display: flex; gap: 10px;" href="">
-                    <AtSymbolIcon class="emailIcon" /> info@smartmall.uz
+                <a style="align-items: center; display: flex; gap: 10px;" href="https://t.me/Electronika070">
+                    <AtSymbolIcon class="emailIcon" /> @Electronika070
                 </a>
                 <div class="info-time">
                     <ClockIcon class="clock-icon" />
